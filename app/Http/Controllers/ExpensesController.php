@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ExpensesRequest;
 use App\Models\Category;
 use App\Models\Expenses;
+use App\Models\MonthlyBudget;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +19,6 @@ class ExpensesController extends Controller
     public function index()
     {
         $cat = Category:: withCount('expenses')->withSum('expenses','amount')->paginate(5);
-//        $cat->count();
         return view('expenses.index',compact('cat'));
     }
 
@@ -38,9 +39,13 @@ class ExpensesController extends Controller
     public function store(ExpensesRequest $request)
     {
         $cat_id = $request->input('category_id'); // Get category ID from the request
-
+        $currentMonth = Carbon::now()->month;
+//        $budget= MonthlyBudget::where('user_id',Auth::user()->id)->where('month', $currentMonth)->first();
+        $budget = MonthlyBudget::where('user_id', Auth::id())
+            ->where('month', $currentMonth)
+            ->first();
         // Perform the transaction
-        DB::transaction(function () use ($request, $cat_id) {
+        DB::transaction(function () use ($request, $cat_id, $budget) {
             $validated = $request->validated();
 
             // Create the expense entry
@@ -48,10 +53,12 @@ class ExpensesController extends Controller
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'category_id' => $cat_id,
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::id(),
+                'monthly_budget_id' => $budget->id, // Corrected this
                 'amount' => $validated['amount'],
             ]);
         });
+
 
         // Redirect to the show route for the given category
         return redirect()->route('expenses.show', $cat_id);

@@ -39,7 +39,14 @@ new class extends Component
                     <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')" wire:navigate>
                         {{ __('Category') }}
                     </x-nav-link>
-                </div>  <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                </div>
+{{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+{{--                    <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')" wire:navigate>--}}
+{{--                        {{ __('Login') }}--}}
+{{--                    </x-nav-link>--}}
+{{--                </div>--}}
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('monthlyBudget.show',Auth::user()->id)" :active="request()->routeIs('monthlyBudget.show')" wire:navigate>
                         {{ __('Budget') }}
                     </x-nav-link>

@@ -17,8 +17,10 @@ class MonthlyBudgetController extends Controller
     public function index()
     {
         $currentMonth = Carbon::now()->month;
-        $budget = MonthlyBudget::with('user')->where('month', $currentMonth)->first();
-        return view('monthlyBudget.index',compact('budget'));
+        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->first();
+        $remaining= $budget->limit - $budget->expenses_sum_amount;
+
+        return view('monthlyBudget.index',compact('budget','remaining'));
     }
 
     /**

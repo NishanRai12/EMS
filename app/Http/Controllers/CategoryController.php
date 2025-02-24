@@ -74,4 +74,58 @@ class CategoryController extends Controller
         $fetch->delete();
         return back();
     }
+//    public function validate(CategoryRequest $request){
+//        $validatedData = $request->validated();
+//        $name = $validatedData['cat_name'];
+//
+//        return back()->with(['name' =>  $name]);
+//    }
+    public function validate(CategoryRequest $request)
+    {
+        // Validate the request
+        $validatedData = $request->validated();
+        $name = $validatedData['cat_name'];
+
+        // Store selected categories in session
+        session()->flash('selected_categories', request('categories', []));
+        return back()->with('success', 'Category added successfully!')->with('name', $name);
+    }
+    public function storeFormSession(Request $request)
+    {
+        $categories = $request->input('categories', []); // Selected category IDs
+        $percentages = $request->input('percentages', []);
+        $percentage = array_sum($percentages);
+        if(empty($categories)){
+            return back()->with('catNull', 'No category selected!');
+        } else if($percentage == 0){
+            return back()->with('null', 'Please enter percentage');
+        }else if($percentage >100){
+            return back()->with('error', 'Percentage cannot be greater than 100%');
+        }else{
+            session([
+                    'categories' => $categories,
+                    'percentages' => $percentages]
+            );
+            return back()->with('success', '1');
+        }
+    }
+    public function newFormCat(Request $request){
+
+    }
+    public function newForm(){
+        //store in array and check all the cat
+        $categories = Category::all();
+        $categoriesArray = $categories->toArray();
+        return view('userReg.newCat',compact('categoriesArray'));
+    }
+public function showFormCat(Request $request){
+        $category = Category::all();
+        return view('userReg.category',compact('category'));
+}
+    public function getDataCat(Request $request){
+        $newCategory = $request->input('newCategory');
+        session(['newCategory' => $newCategory]);
+        return back();
+    }
+
 }

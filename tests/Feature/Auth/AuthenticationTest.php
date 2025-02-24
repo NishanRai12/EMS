@@ -13,22 +13,22 @@ class AuthenticationTest extends TestCase
 
     public function test_login_screen_can_be_rendered(): void
     {
-        $response = $this->get('/login');
+        $response = $this->get('/user');
 
         $response
             ->assertOk()
-            ->assertSeeVolt('pages.auth.login');
+            ->assertSeeVolt('pages.auth.user');
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
         $user = User::factory()->create();
 
-        $component = Volt::test('pages.auth.login')
+        $component = Volt::test('pages.auth.user')
             ->set('form.email', $user->email)
             ->set('form.password', 'password');
 
-        $component->call('login');
+        $component->call('user');
 
         $component
             ->assertHasNoErrors()
@@ -41,11 +41,11 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $component = Volt::test('pages.auth.login')
+        $component = Volt::test('pages.auth.user')
             ->set('form.email', $user->email)
             ->set('form.password', 'wrong-password');
 
-        $component->call('login');
+        $component->call('user');
 
         $component
             ->assertHasErrors()

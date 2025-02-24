@@ -10,6 +10,7 @@ class Expenses extends Model
     protected $fillable = [
         'user_id',
         'category_id',
+        'monthly_budget_id',
         'amount',
         'description',
         'title'
@@ -20,8 +21,13 @@ class Expenses extends Model
     public function category(){
         return $this->belongsTo(Category::class);
     }
-    public function budget()
-    {
+    public function budget(){
+        return $this->belongsTo(MonthlyBudget::class);
+    }
+
+    // Expense belongs to a Monthly Budget
+    public function monthlyBudget(){
+
         return $this->belongsTo(MonthlyBudget::class);
     }
 }

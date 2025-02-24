@@ -19,4 +19,5 @@ class MonthlyBudget extends Model
     {
         return $this->hasMany(Expenses::class);
     }
+
 }
