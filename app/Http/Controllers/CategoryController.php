@@ -127,5 +127,4 @@ public function showFormCat(Request $request){
         session(['newCategory' => $newCategory]);
         return back();
     }
-
 }

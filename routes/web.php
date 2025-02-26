@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\ForecastController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\MonthlyBudgetController;
 use App\Http\Controllers\UserRegController;
@@ -29,6 +31,9 @@ Route::post('/validate-income', [IncomeController::class, 'validate'])->name('va
 Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
 Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
 Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
+Route::resource('forecast',ForecastController::class);
+
+Route::get('/submit-form',[FormController::class, 'finalSubmit'])->name('submit.finalSubmit');
 
 
 

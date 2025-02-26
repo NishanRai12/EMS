@@ -40,11 +40,11 @@ new class extends Component
                         {{ __('Category') }}
                     </x-nav-link>
                 </div>
-{{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                    <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')" wire:navigate>--}}
-{{--                        {{ __('Login') }}--}}
-{{--                    </x-nav-link>--}}
-{{--                </div>--}}
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('forecast.index')" :active="request()->routeIs('forecast.index')" wire:navigate>
+                        {{ __('Forecast Expenses') }}
+                    </x-nav-link>
+                </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('monthlyBudget.show',Auth::user()->id)" :active="request()->routeIs('monthlyBudget.show')" wire:navigate>

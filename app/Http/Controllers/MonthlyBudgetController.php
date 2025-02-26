@@ -54,6 +54,7 @@ class MonthlyBudgetController extends Controller
     public function show(string $id)
     {
         $budget = MonthlyBudget::where('user_id', $id)->get();
+
         return view('monthlyBudget.show', compact('budget'));
     }
 

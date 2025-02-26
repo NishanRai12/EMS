@@ -120,7 +120,7 @@
                     <tr>
                         <td><input type="checkbox"></td>
                         <td>{{ $monthName }}</td> <!-- Display Month Name -->
-                        <td>{{ $budgetEntry->limit ?? '0' }}</td> <!-- Display Limit or '0' if null -->
+                        <td>{{ $budgetEntry->limit ?? '0' }}</td>
                         <td>
                             @if($budgetEntry) <!-- Only show delete form if budgetEntry exists -->
                             <div class="btn-container">

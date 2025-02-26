@@ -84,7 +84,7 @@
                 </div>
                 <button type="submit">Submit</button>
             </form>
-
+            <button onclick= "nextPage()">Cancel</button>
             <div id="new_category_container"></div> <!-- Container for dynamic categories -->
 
         </div>
@@ -92,6 +92,9 @@
 </div>
 
 <script>
+    function nextPage(){
+        window.location.href = '{{route('submit.finalSubmit')}}';
+    }
     // Initialize an array to store categories globally
     let categories = [];
 

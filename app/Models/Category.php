@@ -17,4 +17,7 @@ class Category extends Model
     public function expenses(){
         return $this->hasMany(Expenses::class);
     }
+    public function percentage(){
+        return $this->hasOne(Percentage::class);
+    }
 }
