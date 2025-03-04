@@ -42,34 +42,31 @@
     <body>
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">FORECAST EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
+            <div class="header">FORECAST PREDICTION EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
             @if(session('error'))
                 <h1>{{ session('error') }}</h1>
             @else
-                <div> <strong>Monthly Income: {{ $income->amount }}</strong></div>
+                <div> <strong>Expenses: {{$nextMonthExpenses }} NRP</strong></div>
                 <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Prediction Percentage </th>
-                        <th>Prediction Expenses</th>
-                        <th>Actual Expenses</th>
+                        <th>Percentage </th>
+                        <th>Amount</th>
                     </tr>
                     </thead>
                     <tbody>
                         @foreach($category as $data)
                             <tr>
-                                <td>{{$data->name}}</td>
-                                <td>{{$percentage[$data->id]??0}} %</td>
-                                <td>{{$catPer[$data->id]??0}} Rs</td>
-                                <td>{{$actualExpenses[$data->id]??0}} Rs</td>
+                                <td>{{ $data->name }}</td>
+                                <td>{{ number_format(((($actualExpenses[$data->id] ?? 0) + ($catPer[$data->id] ?? 0)) / 2 )/ $income->amount * 100, 2) }}%</td>
+                                <td>{{ ($actualExpenses[$data->id]?? 0) + ( $catPer[$data->id]??0) /2 }}</td>
 
-{{--                                <td>{{ $data->name }}</td>--}}
-{{--                                <td>{{ $data->pivot->percentage }}%</td> <!-- Access percentage from pivot -->--}}
-{{--                                <td>{{ number_format($amountToSpend, 2) }}</td> <!-- Format amount to two decimal places -->--}}
                             </tr>
                         @endforeach
+
                     </tbody>
+
                 </table>
             @endif
         </div>

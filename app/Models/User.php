@@ -48,10 +48,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function categories()
-    {
-        return $this->hasMany(Category::class);
-    }
+//    public function categories()
+//    {
+//        return $this->hasMany(Category::class);
+//    }
     public function monthlyBudgets()
     {
         return $this->hasMany(MonthlyBudget::class);
@@ -59,4 +59,8 @@ class User extends Authenticatable
     public function expenses(){
         return $this->hasMany(Expenses::class);
     }
+    public function categories(){
+        return $this->belongsToMany(Category::class)->withPivot('percentage','month');
+    }
 }
+

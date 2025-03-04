@@ -73,9 +73,6 @@
 <div class="container">
     <div id="contentWrapper" class="content-wrapper">
         <div class="content">
-            @if(session('completed_user_credential'))
-                <button onclick="nextPage()" style="border: none; background: none ;color: #3260a8; font-size: 30px; margin-right: 307rem" > <i class="fa-solid fa-arrow-right"></i></button>
-            @endif
             <h1>Registration</h1>
             <form action="{{route('validate.user')}}" method="POST" id="validateRform">
                 @csrf
@@ -122,11 +119,8 @@
                     <label for="password" class="label_input">Password</label><br>
                     <input type="password" style="width: 607px" class="form_input" value="{{ old('password', $password ?? '') }}" name="password" id="password">
                 </div>
-                @error('password')
-                <div style="color: red">{{ $message }}</div>
-                @enderror
                 <button type="reset">Reset</button>
-                <button onclick="validateForm()">Submit</button>
+                <button onclick="validateForm()">Next</button>
             </form>
         </div>
     </div>
@@ -134,9 +128,6 @@
 <script>
     function validateRForm(){
                 document.getElementById('validateRform').submit();
-    }
-    function nextPage(){
-        window.location.href = '{{route('income.create')}}';
     }
 </script>
 

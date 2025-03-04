@@ -38,61 +38,61 @@
             </div>
                 <!-- Data Section -->
             <div class="ms-4">
-                <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount}}</p>
-                <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
+                <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$forecast??0 }}</p>
+                <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$monthExpenses??0}}</p>
+                <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$monthTotal}}</p>
             </div>
         </div>
     </div>
 {{--    div for contents--}}
     <div class="container mt-4 d-flex justify-content-center">
-        <div class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.index')}}'">
+        <div class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.today')}}'">
             <h6 class="fw-bold">TODAY EXPENSES</h6>
             <p class="text-muted">Remaining = 1200</p>
             <div class="d-flex align-items-center" >
                 <!-- Circular Progress -->
                 <div class="progress-circle text-dark">
-                    <div>1200<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
+                    <div>{{$todayExpenses}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
                 </div>
                 <!-- Data Section -->
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount}}</p>
-                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
+                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$todayTotal??0}}</p>
                 </div>
             </div>
         </div>
-        <div style="margin-left: 20px" class="card p-4 shadow-sm">
+        <div style="margin-left: 20px" class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.yesterday')}}'">
             <h6 class="fw-bold">YESTERDAY'S EXPENSES</h6>
             <p class="text-muted">Remaining = 1200</p>
             <div class="d-flex align-items-center">
                 <!-- Circular Progress -->
                 <div class="progress-circle text-dark">
-                    <div>1200<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
+                    <div>{{$yesterdayExpenses??0}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
                 </div>
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount}}</p>
-                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
+                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{ $yesterdayTotal??0}}</p>
                 </div>
             </div>
         </div>
 
-        <div style="margin-left: 20px" class="card p-4 shadow-sm">
-            <h6 class="fw-bold">LAST 7 DAY'S</h6>
+        <div style="margin-left: 20px" class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.index')}}'">
+        <h6 class="fw-bold"> EXPENSES FOR {{strtoupper(\Carbon\Carbon::now()->format('F'))}}</h6>
             <p class="text-muted">Remaining = 1200</p>
 
             <div class="d-flex align-items-center">
                 <!-- Circular Progress -->
                 <div class="progress-circle text-dark">
-                    <div>1200<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
+                    <div>{{$monthExpenses}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
                 </div>
 
                 <!-- Data Section -->
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount}}</p>
-                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ?? 0}}</p>
+                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$monthTotal??0}}</p>
                 </div>
             </div>
         </div><div style="margin-left: 20px" class="card p-4 shadow-sm">
@@ -108,7 +108,7 @@
                 <!-- Data Section -->
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount}}</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
                 </div>
             </div>

@@ -1,6 +1,4 @@
-
-
-
+<x-app-layout>
 <!doctype html>
 <html lang="en">
 <head>
@@ -60,40 +58,54 @@
             background-color: gray;
             cursor: not-allowed;
         }
-        .form_input {
-            width: 300px;
-        }
-
         h1 {
             font-family: 'Arial', sans-serif;
             color: #3260a8;
-            font-size: 3rem;
+            font-size: 40px;
             font-weight: bold;
         }
+
+        .form-check-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            flex-grow: 1; /* Allows label to take available space */
+        }
+
     </style>
 </head>
 <body>
 <div class="container">
     <div id="contentWrapper" class="content-wrapper">
         <div class="content">
-            <h1>Income</h1>
-            <form action="{{route('validate.income')}} " method = "POST">
+            <h1>SELECT EXPENSES PERCENTAGE</h1>
+            @if(session('error'))
+                <script>alert('Percentage cannot be greater than 100%')</script>
+            @endif
+            @if(session('null'))
+                <script>alert('Percentage cannot be null')</script>
+            @endif
+            @if(session('catNull'))
+                <script>alert('Category cannot be null')</script>
+            @endif
+            <form action="{{route('category_user.store')}}" method="POST">
                 @csrf
-                <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
-                <div class="mb-1">
-                    <label for="amount" class="label_input">Amount</label> <br>
-                    <input type="number" style="width: 607px" class="form_input" name="amount" id="amount" value="{{ old('amount') }}">
-                </div>
-                @error('amount')
-                <div style="color: red">{{ $message }}</div>
-                @enderror
-                <button type="submit">Next</button>
-                <button type="reset">Reset</button>
+                @foreach($category as $categoriesData)
+                    <div class="form-check">
+                        <input type="checkbox" name="categories[]" value="{{ $categoriesData->id }}" id="category_{{ $categoriesData->id }}" class="form-check-input">
+                        <label class="form-check-label" for="category_{{ $categoriesData->id }}">
+                            {{ $categoriesData->name }}
+                        </label>
+                        <input type="number" name="percentages[{{ $categoriesData->id }}]" placeholder="%" min="0" max="100">
+                    </div>
+                    <br>
+                @endforeach
+                <button type="submit">Submit</button>
             </form>
         </div>
     </div>
 </div>
 </body>
 </html>
-
-
+</x-app-layout>

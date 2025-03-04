@@ -42,40 +42,27 @@
     <body>
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">FORECAST EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
-            @if(session('error'))
-                <h1>{{ session('error') }}</h1>
-            @else
-                <div> <strong>Monthly Income: {{ $income->amount }}</strong></div>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Prediction Percentage </th>
-                        <th>Prediction Expenses</th>
-                        <th>Actual Expenses</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($category as $data)
-                            <tr>
-                                <td>{{$data->name}}</td>
-                                <td>{{$percentage[$data->id]??0}} %</td>
-                                <td>{{$catPer[$data->id]??0}} Rs</td>
-                                <td>{{$actualExpenses[$data->id]??0}} Rs</td>
+            <div class="header">EXPENSES FOR {{strtoupper($month).' '. $date}}</div>
+            @php
+                $colors = ['bg-secondary','bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
+            @endphp
+            @foreach($cat as $index => $categories)
+                <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.yesterdayShow', $categories->id) }}'">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>{{ $categories->name }}</span>
+                        <a href="{{ route('expenses.create', ['category_id' => $categories->id]) }}">
+                            <i class="fa-regular fa-square-plus"></i>
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">Food Items:- {{ $foodCount[$categories->id]}} </h6>
+                        <h6 class="card-title">Total Cost:- {{$totalExpensesPerCat[$categories->id]}} </h6>
 
-{{--                                <td>{{ $data->name }}</td>--}}
-{{--                                <td>{{ $data->pivot->percentage }}%</td> <!-- Access percentage from pivot -->--}}
-{{--                                <td>{{ number_format($amountToSpend, 2) }}</td> <!-- Format amount to two decimal places -->--}}
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
-
     </body>
-
     </html>
 </x-app-layout>

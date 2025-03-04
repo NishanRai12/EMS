@@ -78,9 +78,6 @@
 <div class="container">
     <div id="contentWrapper" class="content-wrapper">
         <div class="content">
-            @if(session('success'))
-                <button onclick="nextPage()" style="border: none; background: none ;color: #3260a8; font-size: 30px; margin-right: 307rem" > <i class="fa-solid fa-arrow-right"></i></button>
-            @endif
                 <h1>SELECT EXPENSES PERCENTAGE</h1>
                 @if(session('error'))
                     <script>alert('Percentage cannot be greater than 100%')</script>

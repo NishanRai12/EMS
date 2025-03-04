@@ -42,7 +42,6 @@
     <div class="container mt-4 d-flex justify-content-center">
         <div class="card p-4 shadow-sm">
             <h5 class="fw-bold">TODAY EXPENSES</h5>
-{{--            <p class="text-muted">Remaining = {{$budget->user->expenses->amount}}</p>--}}
             <div class="d-flex align-items-center">
                 <!-- Circular Progress -->
                 <div class="progress-circle text-dark">

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MonthlyBudgetRequest;
+use App\Models\CategoryUser;
+use App\Models\Expenses;
+use App\Models\Income;
 use App\Models\MonthlyBudget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,10 +20,19 @@ class MonthlyBudgetController extends Controller
     public function index()
     {
         $currentMonth = Carbon::now()->month;
-        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->first();
-        $remaining= $budget->limit - $budget->expenses_sum_amount;
-
-        return view('monthlyBudget.index',compact('budget','remaining'));
+        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->where('user_id',Auth::user()->id)->first();
+        $remaining = ($budget->limit ?? 0) - ($budget->expenses_sum_amount ?? 0);
+        $todayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->sum('amount');
+        $yesterdayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->sum('amount');
+        $monthExpenses =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->sum('amount'); $todayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->sum('amount');
+        $todayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
+        $yesterdayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->count();
+        $monthTotal =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->count();
+        $forecast_percentage = CategoryUser::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('percentage');
+        $user_incoem = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
+//        dd($user_incoem);
+        $forecast = (($forecast_percentage*$user_incoem)/100);
+        return view('monthlyBudget.index',compact('budget','remaining','todayExpenses','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast'));
     }
 
     /**

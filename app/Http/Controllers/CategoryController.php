@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 class CategoryController extends Controller
 {
@@ -46,7 +48,9 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+//        $user = User::find(Auth::id());
+//        $percentage = $user->categories()->withPivot('percentage')->get();
+//        return view('category.show',compact('percentage'));
     }
 
     /**
@@ -74,12 +78,8 @@ class CategoryController extends Controller
         $fetch->delete();
         return back();
     }
-//    public function validate(CategoryRequest $request){
-//        $validatedData = $request->validated();
-//        $name = $validatedData['cat_name'];
-//
-//        return back()->with(['name' =>  $name]);
-//    }
+
+
     public function validate(CategoryRequest $request)
     {
         // Validate the request
@@ -90,6 +90,7 @@ class CategoryController extends Controller
         session()->flash('selected_categories', request('categories', []));
         return back()->with('success', 'Category added successfully!')->with('name', $name);
     }
+    //validate and store the category and percentage
     public function storeFormSession(Request $request)
     {
         $categories = $request->input('categories', []); // Selected category IDs
@@ -106,22 +107,18 @@ class CategoryController extends Controller
                     'categories' => $categories,
                     'percentages' => $percentages]
             );
-            return back()->with('success', '1');
+            return redirect()->route('category.newFormCat');
         }
     }
-    public function newFormCat(Request $request){
-
-    }
+    //display the new form to add categories
     public function newForm(){
-        //store in array and check all the cat
-        $categories = Category::all();
-        $categoriesArray = $categories->toArray();
-        return view('userReg.newCat',compact('categoriesArray'));
+        return view('userReg.newCat');
     }
-public function showFormCat(Request $request){
-        $category = Category::all();
-        return view('userReg.category',compact('category'));
-}
+    //display the form to select the categories with percentage
+    public function showFormCat(){
+            $category = Category::all();
+            return view('userReg.category',compact('category'));
+    }
     public function getDataCat(Request $request){
         $newCategory = $request->input('newCategory');
         session(['newCategory' => $newCategory]);
