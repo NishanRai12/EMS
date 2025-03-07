@@ -21,7 +21,6 @@
             }
 
             .child_div_1 {
-                height: 90vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;

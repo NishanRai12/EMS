@@ -41,7 +41,7 @@ new class extends Component
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('forecast.index')" :active="request()->routeIs('forecast.index')" wire:navigate>
+                    <x-nav-link :href="route('forecast.shoeExpenses',\Carbon\Carbon::now()->format('F'))" :active="request()->routeIs('forecast.index')" wire:navigate>
                         {{ __('Forecast Expenses') }}
                     </x-nav-link>
                 </div>
@@ -50,11 +50,11 @@ new class extends Component
                         {{ __('Budget') }}
                     </x-nav-link>
                 </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('forecast.show',Auth::user()->id)" :active="request()->routeIs('forecast.show')" wire:navigate>
-                        {{ __('Prediction') }}
-                    </x-nav-link>
-                </div>
+{{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+{{--                    <x-nav-link :href="route('forecast.show',\Illuminate\Support\Carbon::now()->addMonth()->format('F'))" :active="request()->routeIs('forecast.show')" wire:navigate>--}}
+{{--                        {{ __('Prediction') }}--}}
+{{--                    </x-nav-link>--}}
+{{--                </div>--}}
             </div>
 
 

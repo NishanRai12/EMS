@@ -20,7 +20,7 @@
                         margin: 0;
                     }
                     .child_div_1 {
-                        height: 90vh;
+
                         margin-top: 30px;
                         background-color: #ffffff;
                         padding: 25px;
@@ -49,9 +49,6 @@
                             <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.show', $categories->id) }}'">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <span>{{ $categories->name }}</span>
-                                    <a href="{{ route('expenses.create', ['category_id' => $categories->id]) }}">
-                                        <i class="fa-regular fa-square-plus"></i>
-                                    </a>
                                 </div>
                                 <div class="card-body">
                                     <h6 class="card-title">Food Items:- {{ $foodCount[$categories->id]}} </h6>

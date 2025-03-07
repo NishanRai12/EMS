@@ -84,7 +84,7 @@
                 </div>
                 <button type="submit">Submit</button>
             </form>
-            <button onclick= "nextPage()">Cancel</button>
+            <button onclick= "nextPage()">Next</button>
             <div id="new_category_container"></div> <!-- Container for dynamic categories -->
 
         </div>
@@ -93,12 +93,11 @@
 
 <script>
     function nextPage(){
-        window.location.href = '{{route('submit.finalSubmit')}}';
+        window.location.href = '{{route('category.showFormCat')}}';
     }
-    // Initialize an array to store categories globally
+
     let categories = [];
 
-    // Function to handle adding a new category
     function newCat() {
         const newCategory = document.getElementById('new_cat').value.trim();
 
@@ -121,15 +120,13 @@
             container.classList.add("category-container");
             container.appendChild(newInput);
             container.appendChild(label);
-
-            // Append the new category container to the existing container
             document.getElementById("new_category_container").appendChild(container);
 
-            // Add the new category to the categories array
+            //pushing to array
             categories.push(newCategory);
             console.log(categories); // Log the updated array of categories
 
-            // Clear the input field after adding the category
+            // clear the input
             document.getElementById('new_cat').value = '';
 
             let input = document.createElement("input");

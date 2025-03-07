@@ -108,12 +108,8 @@ class ExpensesController extends Controller
                 'amount' => $validated['amount'],
             ]);
         });
-
-
-        // Redirect to the show route for the given category
-        return redirect()->route('expenses.show', $cat_id);
+        return back()->with('success','Expense created successfully');
     }
-
 
     /**
      * Display the specified resource.

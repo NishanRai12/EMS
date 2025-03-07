@@ -71,6 +71,12 @@
             cursor: pointer;
             flex-grow: 1; /* Allows label to take available space */
         }
+        .form-check{
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
     </style>
 </head>
@@ -92,11 +98,15 @@
                     @csrf
                     @foreach($category as $categoriesData)
                         <div class="form-check">
-                            <input type="checkbox" name="categories[]" value="{{ $categoriesData->id }}" id="category_{{ $categoriesData->id }}" class="form-check-input">
+                            <div>
+                            <input type="hidden" name="categories[]" value="{{ $categoriesData->id }}" id="category_{{ $categoriesData->id }}" class="form-check-input">
                             <label class="form-check-label" for="category_{{ $categoriesData->id }}">
                                 {{ $categoriesData->name }}
                             </label>
+                            </div>
+                            <div>
                             <input type="number" name="percentages[{{ $categoriesData->id }}]" placeholder="%" min="0" max="100">
+                            </div>
                         </div>
                         <br>
                     @endforeach

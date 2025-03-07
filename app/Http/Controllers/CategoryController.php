@@ -107,7 +107,8 @@ class CategoryController extends Controller
                     'categories' => $categories,
                     'percentages' => $percentages]
             );
-            return redirect()->route('category.newFormCat');
+            return redirect()->route('submit.finalSubmit');
+
         }
     }
     //display the new form to add categories

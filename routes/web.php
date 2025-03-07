@@ -43,6 +43,7 @@ Route::get('/today-expenses', [ExpensesController::class, 'today'])->name('expen
 Route::get('/yesterday-expenses', [ExpensesController::class, 'yesterday'])->name('expenses.yesterday');
 Route::get('/today-show/{id}', [ExpensesController::class, 'todayShow'])->name('expenses.todayShow');
 Route::get('/yesterday-show/{id}', [ExpensesController::class, 'yesterdayShow'])->name('expenses.yesterdayShow');
+Route::get('/expenses-show/{id}', [ForecastController::class, 'showExpenses'])->name('forecast.shoeExpenses');
 Route::middleware('catRegCheck','auth')->group(function(){
 Route::resource('monthlyBudget',MonthlyBudgetController::class);
 });

@@ -53,6 +53,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            <!-- Link to add percentage -->
+            <a style="" class="btn btn-primary">Assign Percentage</a>
+
             @php
                 $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp

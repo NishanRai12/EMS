@@ -37,12 +37,57 @@
                 padding: 10px;
                 border-radius: 4px;
             }
+            .header {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                text-align: center;
+                color: #333;
+            }
+
+            /* Month Buttons Container */
+            .months {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            /* Individual Button Style */
+            .month-btn {
+                padding: 10px 13px;
+                font-size: 14px;
+                background-color: #BEC5EA;
+                color: black;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin: 5px;
+                text-decoration: none;
+            }
+            .month-btn:hover {
+                background-color: #8081b8;  /* Darker green */
+                transform: scale(1.1);  /* Slightly enlarge on hover */
+            }
+
+            /*!* Button Focus Effect (For Accessibility) *!*/
+            /*.month-btn:focus {*/
+            /*    outline: none;*/
+            /*    box-shadow: 0 0 5px 2px rgba(76, 175, 80, 0.6);  !* Soft green glow *!*/
+            /*}*/
         </style>
     </head>
     <body>
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <div class="header">FORECAST PREDICTION EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
+            <div class="months">
+                @foreach($months as $mon)
+                    <a class="month-btn" href="{{route('forecast.show',$mon)}}">{{$mon}}</a>
+{{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
+                @endforeach
+            </div>
             @if(session('error'))
                 <h1>{{ session('error') }}</h1>
             @else
@@ -59,7 +104,11 @@
                         @foreach($category as $data)
                             <tr>
                                 <td>{{ $data->name }}</td>
-                                <td>{{ number_format(((($actualExpenses[$data->id] ?? 0) + ($catPer[$data->id] ?? 0)) / 2 )/ $income->amount * 100, 2) }}%</td>
+                                @if($user_income ==0)
+                                <td>0</td>
+                                @else
+                                <td>{{ number_format(((($actualExpenses[$data->id] ?? 0) + ($catPer[$data->id] ?? 0)) / 2 )/  $user_income  * 100, 2) }}%</td>
+                                @endif
                                 <td>{{ ($actualExpenses[$data->id]?? 0) + ( $catPer[$data->id]??0) /2 }}</td>
 
                             </tr>
@@ -71,8 +120,6 @@
             @endif
         </div>
     </div>
-
     </body>
-
     </html>
 </x-app-layout>

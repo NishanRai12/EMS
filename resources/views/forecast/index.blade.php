@@ -21,7 +21,6 @@
             }
 
             .child_div_1 {
-                height: 90vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;
@@ -36,42 +35,135 @@
                 background: #e8eaf6;
                 padding: 10px;
                 border-radius: 4px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
+            /* Month Buttons Container */
+            .months {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            /* Individual Button Style */
+            .month-btn {
+                padding: 10px 13px;
+                font-size: 14px;
+                background-color: #BEC5EA;
+                color: black;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin: 5px;
+                text-decoration: none;
+            }
+            .month-btn:hover {
+                background-color: #8081b8;  /* Darker green */
+                transform: scale(1.1);  /* Slightly enlarge on hover */
+            }
+            .income {
+                margin-bottom: 20px; /* Add space between each div */
+                padding: 15px; /* Add padding for better readability */
+                border-radius: 8px; /* Rounded corners */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                font-family: Arial, sans-serif; /* Use a clean font for text */
+                color: #333; /* Default text color */
+                background-color: #e8f5e9; /* Light green background */
+                border-left: 5px solid #00bcd4; /* Cyan border for distinction */
+            }
+
+            /* Specific styles for Expenses Prediction */
+            .prediction {
+                margin-bottom: 20px; /* Add space between each div */
+                padding: 15px; /* Add padding for better readability */
+                border-radius: 8px; /* Rounded corners */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                font-family: Arial, sans-serif; /* Use a clean font for text */
+                color: #333; /* Default text color */
+                background-color: #fff3e0; /* Light orange background */
+                border-left: 5px solid #ff9800; /* Orange border for distinction */
+            }
+
+            /* Specific styles for Actual Expenses */
+            .actual {
+                margin-bottom: 20px; /* Add space between each div */
+                padding: 15px; /* Add padding for better readability */
+                border-radius: 8px; /* Rounded corners */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                font-family: Arial, sans-serif; /* Use a clean font for text */
+                color: #333; /* Default text color */
+                background-color: #e0f7fa; /* Light cyan background */
+                border-left: 5px solid #4caf50; /* Green border for distinction */
+            }
+
+            /* Style for the text inside the strong tag */
+            strong {
+                font-size: 18px; /* Slightly larger font size */
+                color: #333; /* Dark text color */
+                font-weight: bold; /* Bold the text */
+            }
+            .header .left {
+                font-size: 20px; /* Adjust font size for the left side */
+                color: #333; /* Dark color for left text */
+            }
+
+            .header .right {
+                font-size: 18px; /* Adjust font size for the right side */
+                color: #4caf50; /* Green color for "predict" */
+            }
+
+
+
         </style>
     </head>
     <body>
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">FORECAST EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
-            @if(session('error'))
-                <h1>{{ session('error') }}</h1>
-            @else
-                <div> <strong>Monthly Income: {{ $income->amount }}</strong></div>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Prediction Percentage </th>
-                        <th>Prediction Expenses</th>
-                        <th>Actual Expenses</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($category as $data)
-                            <tr>
-                                <td>{{$data->name}}</td>
-                                <td>{{$percentage[$data->id]??0}} %</td>
-                                <td>{{$catPer[$data->id]??0}} Rs</td>
-                                <td>{{$actualExpenses[$data->id]??0}} Rs</td>
+            <div class="header">
+                <span class="left">EXPENSES TRACKING FOR [ {{ strtoupper($currentMonth) }} ]</span>
+                <a href="{{ route('forecast.show', \Illuminate\Support\Carbon::now()->addMonth()->format('F')) }}" class="right">predict</a>
+            </div>
+            <div class="months">
+                    @foreach($months as $mon)
+                        <a class="month-btn" href="{{route('forecast.shoeExpenses',$mon)}}">{{$mon}}</a>
+                        {{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
+                    @endforeach
 
-{{--                                <td>{{ $data->name }}</td>--}}
-{{--                                <td>{{ $data->pivot->percentage }}%</td> <!-- Access percentage from pivot -->--}}
-{{--                                <td>{{ number_format($amountToSpend, 2) }}</td> <!-- Format amount to two decimal places -->--}}
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+                </div>
+            <br>
+            <div class="income">
+                <strong>Income: {{  $income_amount }}</strong>
+            </div>
+            <div class="prediction">
+                <strong>Expenses Prediction: {{  $overallPercentageValue }}</strong>
+            </div>
+            <div class="actual">
+                <strong>Actual expenses: {{  $expenses }}</strong>
+            </div>
+
+            <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Prediction Percentage </th>
+                            <th>Prediction Expenses</th>
+                            <th>Actual Expenses</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($category as $data)
+                                <tr>
+                                    <td>{{$data->name}}</td>
+                                    <td>{{$percentage[$data->id]??0}} %</td>
+                                    <td>Rs     {{$catPer[$data->id]??0}}</td>
+                                    <td>Rs     {{$actualExpenses[$data->id]??0}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
         </div>
     </div>
 
