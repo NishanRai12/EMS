@@ -72,19 +72,24 @@
     <div class="content-wrapper">
         <div class="content">
             <h1>ADD CATEGORY</h1>
-            <form action="{{route('category.getDataCat')}}" method="POST">
+            <form action="{{ route('category.getDataCat') }}" method="POST">
                 @csrf
                 <div style="display: flex; align-items: center;">
                     <input style="width: 150px; margin-right: 10px;" type="text" placeholder="New Category" name="cat_name" id="new_cat">
-                    <button style="background: none; border: none;color: #1f2937" type="button" onclick="newCat()"><i class="fa-solid fa-square-plus"></i></button>
-                    <br>
-                    @error('cat_name')
-                    <div style="color: red">{{ $message }}</div>
-                    @enderror
+                    <button style="background: none; border: none; color: #1f2937" type="button" onclick="newCat()">
+                        <i class="fa-solid fa-square-plus"></i>
+                    </button>
                 </div>
-                <button type="submit">Submit</button>
+                @error('cat_name')
+                <div style="color: red">{{ $message }}</div>
+                @enderror
+                <div id="new_category_container"></div>
+                <input type="hidden" name="newCategory" id="hidden_categories">
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button type="submit">Submit</button>
+                    <button type="button" onclick="nextPage()">Cancel</button>
+                </div>
             </form>
-            <button onclick= "nextPage()">Next</button>
             <div id="new_category_container"></div> <!-- Container for dynamic categories -->
 
         </div>
@@ -96,6 +101,8 @@
         window.location.href = '{{route('category.showFormCat')}}';
     }
 
+    // Convert existing categories to lowercase for case-insensitive comparison
+    let currCategories = @json($currentCategories).map(cat => cat.toLowerCase());
     let categories = [];
 
     function newCat() {
@@ -103,9 +110,11 @@
 
         if (newCategory === '') {
             alert('Category name cannot be empty!');
-        }else if(categories.includes(newCategory)){
-            alert('New Category Already placed')
-        }else {
+        } else if (categories.includes(newCategory)) {
+            alert('New category already added!');
+        } else if (currCategories.includes(newCategory.toLowerCase())) {
+            alert('Category already exists in database!');
+        } else {
             // Create a new checkbox for the category
             const newInput = document.createElement("input");
             newInput.type = "checkbox";
@@ -114,29 +123,26 @@
             // Create the label for the new category
             const label = document.createElement("label");
             label.textContent = newCategory;
+            label.style.marginLeft = "5px";
 
             // Create a div to hold the checkbox and label
             const container = document.createElement("div");
             container.classList.add("category-container");
             container.appendChild(newInput);
             container.appendChild(label);
+
             document.getElementById("new_category_container").appendChild(container);
 
-            //pushing to array
+            // Push to categories array
             categories.push(newCategory);
-            console.log(categories); // Log the updated array of categories
 
-            // clear the input
+            // Clear input field
             document.getElementById('new_cat').value = '';
 
-            let input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "newCategory";
-            input.value = categories;
-            document.querySelector('form').appendChild(input)
+            // Update the hidden input field with categories
+            document.getElementById("hidden_categories").value = JSON.stringify(categories);
         }
     }
 </script>
-
 </body>
 </html>

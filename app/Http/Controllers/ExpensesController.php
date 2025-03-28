@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\CategoryUser;
 use App\Models\Expenses;
 use App\Models\MonthlyBudget;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,7 @@ class ExpensesController extends Controller
      */
     public function index()
     {
+
         $cat = Category:: all();
         $expenses = Expenses::with('category')->where('user_id', Auth::id())->get();
         //willstore the array of each category total expenses
@@ -34,6 +36,19 @@ class ExpensesController extends Controller
     //displat the expenses of today
     public function today()
     {
+//        //eager loading retrieves related data along with the main model.
+//        $user = User::with('expenses')->get();
+//        foreach ($user as $value) {
+//            dd($value->expenses);
+//        }
+//
+//        //first fetch all the users then
+//         //then fetches related data only when it is accessed,
+//        $users= User::all();
+//        foreach ($users as $value) {
+////            dd($value->expenses);
+//            dd($value->expenses);
+//        }
         //fetch all category
         $cat = Category:: all();
         //recent time and month
@@ -99,14 +114,16 @@ class ExpensesController extends Controller
             $validated = $request->validated();
 
             // Create the expense entry
-            Expenses::create([
+           $expenses= Expenses::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'category_id' => $cat_id,
                 'user_id' => Auth::id(),
-//                'monthly_budget_id' => $budget->id, // Corrected this
                 'amount' => $validated['amount'],
             ]);
+           $expenses->statements()->create([
+               'amount' => $validated['amount']
+           ]);
         });
         return back()->with('success','Expense created successfully');
     }

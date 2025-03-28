@@ -21,7 +21,7 @@ class MonthlyBudgetController extends Controller
     public function index()
     {
         $currentMonth = Carbon::now()->month;
-        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->where('user_id',Auth::user()->id)->first();
+//        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->where('user_id',Auth::user()->id)->first();
         $remaining = ($budget->limit ?? 0) - ($budget->expenses_sum_amount ?? 0);
         $todayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->sum('amount');
         $yesterdayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->sum('amount');
@@ -33,7 +33,7 @@ class MonthlyBudgetController extends Controller
         $user_incoem = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
 //        dd($user_incoem);
         $forecast = (($forecast_percentage*$user_incoem)/100);
-        return view('monthlyBudget.index',compact('budget','remaining','todayExpenses','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast'));
+        return view('monthlyBudget.index',compact('remaining','todayExpenses','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast'));
     }
 
     /**

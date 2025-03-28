@@ -34,7 +34,7 @@
     <div class="main_div">
         <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-                New Tag
+                Add Categories
             </button>
 
             <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height:50%; width: 100%;">
@@ -62,15 +62,20 @@
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Created</th>
-                    <th scope="col">Posts</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Users</th>
 
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($categories as $displayData)
                     <tr>
-                        <td>{{$displayData->name}}</td>
-                        <td>{{$displayData->created_at}}</td>
+                        <td>{{ $displayData->name }}</td>
+                        <td>{{ $displayData->created_at }}</td>
+                        <td>{{ $displayData->user->fullname() }}</td>
+{{--                        <td>{{ $displayData->id }}</td>--}}
+
+
                         <td>
                             <div class="dropdown-center" style="display: flex; justify-content: end; ">
                                 <button style="background-color: white ; border: none;color : black ; place-content: center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,7 +96,7 @@
 
                 </tbody>
             </table>
-            {{$categories->links()}}
+{{--            {{$categories->links()}}--}}
 
         </div>
     </div>

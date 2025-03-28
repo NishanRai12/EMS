@@ -17,11 +17,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin: 0;
             }
 
             .child_div_1 {
-                height: auto;
+                height: 80vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;
@@ -45,7 +44,7 @@
     <div class="main_div">
         <div class="child_div_1">
 {{--            display the header--}}
-            <div class="header">ESTIMATE CATEGORIES EXPENSES FOR {{ strtoupper(\Carbon\Carbon::now()->format('F')) }}  <a href="{{route('category_user.create')}}"><i class="fa-solid fa-square-plus"></i></a></div>
+            <div class="header">ESTIMATE CATEGORIES EXPENSES FOR {{ strtoupper(\Carbon\Carbon::now()->format('F')) }}  <a href="{{route('category.create')}}"><i class="fa-solid fa-square-plus"></i></a></div>
 {{--            display success message--}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -54,7 +53,7 @@
                 </div>
             @endif
             <!-- Link to add percentage -->
-            <a style="" class="btn btn-primary">Assign Percentage</a>
+            <a href="{{route('category_user.create')}}" style="margin-bottom: 20px" class="btn btn-primary">Assign Percentage</a>
 
             @php
                 $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];

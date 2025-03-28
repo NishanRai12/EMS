@@ -103,7 +103,7 @@ class CategoryUserController extends Controller
         $user->categories()->syncWithoutDetaching([
             $id => ['percentage' => $newPercentage]
         ]);
-        return back()->with('success', 'The percentage has been updated.');
+        return back()->with('success', 'The Thebpercentage has been updated.');
     }
 
     /**

@@ -134,6 +134,7 @@ class ForecastController extends Controller
         $category= Category::all();
         $currentMonth = Carbon::now()->format('F');
         $currentMon =Carbon::parse($id)->format('n');
+//        dd($id);
         //getting income
         $income = Income::where('user_id', Auth::id())
             ->where('month', $currentMon)

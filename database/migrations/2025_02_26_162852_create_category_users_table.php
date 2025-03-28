@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_users', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->primary(['user_id', 'category_id']);
+        Schema::create('category_user', function (Blueprint $table) {
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('category_id')->constrained('categories');
+            $table->integer('month');
+            $table->primary(['user_id', 'category_id','month']);
             $table->integer('percentage');
             $table->timestamps();
         });

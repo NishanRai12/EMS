@@ -1,6 +1,3 @@
-
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,7 +11,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
         .container {
-            margin-top: 2%;
+            margin-top: 12%;
             height: 500px;
             overflow: hidden;
             border: 1px solid #333;

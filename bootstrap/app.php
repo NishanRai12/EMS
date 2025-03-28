@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminChecker;
 use App\Http\Middleware\DataExistance;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias(
             [
                 'catRegCheck'=> DataExistance::class,
+                'adminCheck'=> AdminChecker::class,
             ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

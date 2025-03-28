@@ -10,7 +10,6 @@ class Expenses extends Model
     protected $fillable = [
         'user_id',
         'category_id',
-        'monthly_budget_id',
         'amount',
         'description',
         'title'
@@ -29,5 +28,8 @@ class Expenses extends Model
     public function monthlyBudget(){
 
         return $this->belongsTo(MonthlyBudget::class);
+    }
+    public function statements(){
+        return $this->morphMany(Statement::class, 'statementable');
     }
 }

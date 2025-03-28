@@ -38,69 +38,60 @@
                 border-radius: 4px;
                 text-align: center;
             }
-            .form-group {
+            /* Month Buttons Container */
+            .months {
                 display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                margin-bottom: 10px;
-            }
-            .form-group label {
-                flex: 1 1 30%;
-                margin-bottom: 5px;
-                font-size: 14px;
-            }
-            .form-group input, .form-group select {
-                flex: 1 1 65%;
-                padding: 8px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-            }
-            .button-group {
-                display: flex;
-                justify-content: flex-start;
                 gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
-            .button-group button {
-                padding: 10px 15px;
+
+            /* Individual Button Style */
+            .month-btn {
+                padding: 10px 13px;
+                font-size: 14px;
+                background-color: #BEC5EA;
+                color: black;
                 border: none;
-                border-radius: 4px;
+                border-radius: 5px;
                 cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                margin: 5px;
+                text-decoration: none;
             }
-            .add {
-                background: #007bff;
-                color: #fff;
-            }
-            .reset {
-                background: #dc3545;
-                color: #fff;
+            .month-btn:hover {
+                background-color: #8081b8;  /* Darker green */
+                transform: scale(1.1);  /* Slightly enlarge on hover */
             }
         </style>
     </head>
 
     <div class="main_div">
         <div class="child_div_1">
-            <div class="header">Add New Categories</div>
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            {{--            display the header--}}
+            <div class="header">ESTIMATE CATEGORIES EXPENSES FOR {{strtoupper($currMonth) }} </div>
+            {{--            display success message--}}
+
+
+            <div class="months">
+                @foreach($months as $mon)
+                    <a class="month-btn" href="{{route('admin.show',$mon)}}">{{$mon}}</a>
+                    {{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
+                @endforeach
+
+            </div>
+            @php
+                $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
+            @endphp
+
+            @foreach($percentage as $index => $categoryUser)
+                <div class="card {{ $colors[$index % count($colors)] }} text-white mb-3" style="max-width: 80%; margin-left: 10%">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>{{ $categoryUser->category->name??" " }} [{{ $categoryUser->percentage }}%]</span>
+                    </div>
                 </div>
-            @endif
-            <form action="{{route('category.store')}}" method="POST">
-                @csrf
-                <input type="hidden" name="user_logged" value="{{Auth::user()->id}}">
-                <div class="form-group">
-                    <label for="cat_name">Name</label>
-                    <input name="cat_name" placeholder="Name">
-                </div>
-                @error('cat_name')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
-                @enderror
-                <div class="button-group">
-                    <button type="submit" class="add">Add</button>
-                    <button type="reset" class="reset">Reset</button>
-                </div>
-            </form>
+            @endforeach
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

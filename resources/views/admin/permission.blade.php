@@ -1,15 +1,15 @@
 <x-app-layout>
-    <!doctype html>
-    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Navbar Example</title>
-        <!-- Bootstrap CSS -->
+        <title>Categories</title>
+
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        {{--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>--}}
+
         <style>
             .main_div {
                 font-family: Arial, sans-serif;
@@ -17,11 +17,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin: 0;
             }
 
             .child_div_1 {
-                height: 90vh;
+                height: 80vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;
@@ -29,6 +28,7 @@
                 width: 100%;
                 max-width: 90%;
             }
+
             .header {
                 font-size: 18px;
                 font-weight: bold;
@@ -36,20 +36,17 @@
                 background: #e8eaf6;
                 padding: 10px;
                 border-radius: 4px;
-            }
-            .header {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 20px;
                 text-align: center;
-                color: #333;
             }
+            /* Month Buttons Container */
             .months {
                 display: flex;
                 gap: 10px;
                 flex-wrap: wrap;
                 justify-content: center;
             }
+
+            /* Individual Button Style */
             .month-btn {
                 padding: 10px 13px;
                 font-size: 14px;
@@ -68,48 +65,38 @@
             }
         </style>
     </head>
-    <body>
+
     <div class="main_div">
-        <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">FORECAST PREDICTION EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
-            <div class="months">
-                @foreach($months as $mon)
-{{--                    <a class="month-btn" href="{{route('forecast.show',$mon)}}">{{$mon}}</a>--}}
-{{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
-                @endforeach
-            </div>
-            @if(session('error'))
-                <h1>{{ session('error') }}</h1>
-            @else
-                <div> <strong>Expenses: {{$nextMonthExpenses }} NRP</strong></div>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Percentage </th>
-                        <th>Amount</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($category as $data)
+        <div class="child_div_1">
+
+            @foreach($allPermissions as $group => $permissions)
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>{{ $group }}</h2> <!-- Display group name -->
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
                             <tr>
-                                <td>{{ $data->name }}</td>
-                                @if($user_income ==0)
-                                <td>0</td>
-                                @else
-                                <td>{{ number_format(((($actualExpenses[$data->id] ?? 0) + ($catPer[$data->id] ?? 0)) / 2 )/  $user_income  * 100, 2) }}%</td>
-                                @endif
-                                <td>{{ ($actualExpenses[$data->id]?? 0) + ( $catPer[$data->id]??0) /2 }}</td>
-
+                                <th>#</th>
+                                <th>Permission Name</th>
+                                <th>Description</th> <!-- Add more columns if you have more fields -->
                             </tr>
-                        @endforeach
-
-                    </tbody>
-
-                </table>
-            @endif
+                            </thead>
+                            <tbody>
+                            @foreach($permissions as $permission)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td> <!-- Display index number -->
+                                    <td>{{ $permission->name }}</td> <!-- Assuming 'name' is the permission name field -->
+                                    <td>{{ $permission->description ?? 'No Description' }}</td> <!-- Assuming 'description' is a field (optional) -->
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
-    </body>
-    </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

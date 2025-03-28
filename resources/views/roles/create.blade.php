@@ -79,21 +79,20 @@
 
     <div class="main_div">
         <div class="child_div_1">
-            <div class="header">Add New Categories</div>
+            <div class="header">Add New Role</div>
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form action="{{route('category.store')}}" method="POST">
+            <form action="{{route('role.store')}}" method="POST">
                 @csrf
-                <input type="hidden" name="user_logged" value="{{Auth::user()->id}}">
                 <div class="form-group">
-                    <label for="cat_name">Name</label>
-                    <input name="cat_name" placeholder="Name">
+                    <label for="role_name">Name</label>
+                    <input name="role_name" placeholder="Name">
                 </div>
-                @error('cat_name')
+                @error('role_name')
                 <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
                 @enderror
                 <div class="button-group">

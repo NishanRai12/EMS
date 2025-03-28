@@ -22,39 +22,67 @@ new class extends Component
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('monthlyBudget.index') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
-                    </a>
-                </div>
+                @if(\Illuminate\Support\Facades\Auth::user()->role == "admin")
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')" wire:navigate>
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    </div>
+{{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+{{--                        <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')" wire:navigate>--}}
+{{--                            {{ __('Categories') }}--}}
+{{--                        </x-nav-link>--}}
+{{--                    </div><div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+{{--                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate>--}}
+{{--                            {{ __('Users') }}--}}
+{{--                        </x-nav-link>--}}
+{{--                    </div>--}}
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('role.create')" :active="request()->routeIs('role.create')" wire:navigate>
+                            {{ __('Role') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('admin.permission')" :active="request()->routeIs('admin.permission')" wire:navigate>
+                            {{ __('Permission') }}
+                        </x-nav-link>
+                    </div>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('monthlyBudget.index')" :active="request()->routeIs('monthlyBudget.index')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('category_user.show',Auth::user()->id)" :active="request()->routeIs('category_user.show')" wire:navigate>
-                        {{ __('Category') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('forecast.shoeExpenses',\Carbon\Carbon::now()->format('F'))" :active="request()->routeIs('forecast.index')" wire:navigate>
-                        {{ __('Forecast Expenses') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('monthlyBudget.show',Auth::user()->id)" :active="request()->routeIs('monthlyBudget.show')" wire:navigate>
-                        {{ __('Budget') }}
-                    </x-nav-link>
-                </div>
-{{--                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                    <x-nav-link :href="route('forecast.show',\Illuminate\Support\Carbon::now()->addMonth()->format('F'))" :active="request()->routeIs('forecast.show')" wire:navigate>--}}
-{{--                        {{ __('Prediction') }}--}}
-{{--                    </x-nav-link>--}}
-{{--                </div>--}}
+                @else
+                    <div class="shrink-0 flex items-center">
+                        <a href="{{ route('monthlyBudget.index') }}" wire:navigate>
+                            <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                        </a>
+                    </div>
+                    <!-- Navigation Links -->
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('monthlyBudget.index')" :active="request()->routeIs('monthlyBudget.index')" wire:navigate>
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    </div>
+                    <!-- Navigation Links -->
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('category_user.show',Auth::user()->id)" :active="request()->routeIs('category_user.show')" wire:navigate>
+                            {{ __('Category') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('forecast.shoeExpenses',\Carbon\Carbon::now()->format('F'))" :active="request()->routeIs('forecast.index')" wire:navigate>
+                            {{ __('Forecast Expenses') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('monthlyBudget.show',Auth::user()->id)" :active="request()->routeIs('monthlyBudget.show')" wire:navigate>
+                            {{ __('Budget') }}
+                        </x-nav-link>
+                    </div>
+{{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
+{{--                        <x-nav-link :href="route('role.create'" :active="request()->routeIs('role.create')" wire:navigate>--}}
+{{--                            {{ __('Roles') }}--}}
+{{--                        </x-nav-link>--}}
+{{--                    </div>--}}
+
+                @endif
             </div>
 
 

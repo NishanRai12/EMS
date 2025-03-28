@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Income;
 use App\Models\Percentage;
+use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -30,6 +31,8 @@ class FormController extends Controller
                     'role' => 'user',
                     'password' => Hash::make($form1Data['password']),
                 ]);
+                $role = Role::where('role_name', 'user')->first();
+                $user->roles()->attach($role->id);
                 Income::create([
                     'amount' => $incomeData['amount'],
                     'month' => $incomeData['month'],
@@ -59,10 +62,13 @@ class FormController extends Controller
                 $user=Auth::user();
                 $user_id=Auth::id();
                 if($incomeData){
-                    Income::create([
+                    $income =  Income::create([
                         'amount' => $incomeData['amount'],
                         'month' => $incomeData['month'],
                         'user_id'=> $user_id
+                    ]);
+                    $income->statements()->create([
+                        'amount' => $incomeData['amount']
                     ]);
                 }
                 if($oldCatData){
@@ -82,8 +88,8 @@ class FormController extends Controller
                         ]);
                     }
                 }
-                return redirect()->route('monthlyBudget.index');
             }
         });
+        return redirect()->route('user');
     }
 }

@@ -14,4 +14,10 @@ class Income extends Model
         'amount',
         'income_date'
     ];
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    public function statements(){
+        return $this->morphMany(Statement::class, 'statementable');
+    }
 }

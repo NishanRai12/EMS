@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use App\Models\CategoryUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,14 +16,23 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate(10);
-        return view('category.index', compact('categories'));
+        $categories = Category::with('user')->get();
+//        $totalUserCategories=$categories->mapWithKeys(function($categories){
+//            return [$categories->id=>CategoryUser::where('category_id',$categories->id)->distinct('user_id')->count()];
+//        });
+        $totalUserCategories = Category::leftJoin('category_user', 'categories.id', '=', 'category_user.category_id')
+            ->leftJoin('users', 'category_user.user_id', '=', 'users.id')
+            ->select('categories.id', 'categories.name', 'categories.user_id', DB::raw('COUNT(DISTINCT category_user.user_id) as users_count'))
+            ->groupBy('categories.id', 'categories.name', 'categories.user_id')
+            ->get();
+        return view('category.index', compact('categories','totalUserCategories'));
     }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
+        return view('category.create');
     }
 
     /**
@@ -30,16 +40,14 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-//        dd(auth()->user()); /
         DB::transaction(function () use ($request) {
             $validatedData = $request->validated();
-//            dd($validatedData['cat_name']);
             Category::create([
                 'name' => $validatedData['cat_name'] , // Ensure key exists
-                'user_id' => $request->input('user_logged')
+                'user_id' => Auth::id()
             ]);
         });
-        return back();
+        return back()->with('success', 'Category created successfully');
 
     }
 
@@ -48,9 +56,6 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-//        $user = User::find(Auth::id());
-//        $percentage = $user->categories()->withPivot('percentage')->get();
-//        return view('category.show',compact('percentage'));
     }
 
     /**
@@ -113,16 +118,17 @@ class CategoryController extends Controller
     }
     //display the new form to add categories
     public function newForm(){
-        return view('userReg.newCat');
+        $currentCategories = Category::all()->pluck('name')->toArray();
+        return view('userReg.newCat',compact('currentCategories'));
     }
     //display the form to select the categories with percentage
     public function showFormCat(){
-            $category = Category::all();
-            return view('userReg.category',compact('category'));
+        $category = Category::all();
+        return view('userReg.category',compact('category'));
     }
     public function getDataCat(Request $request){
         $newCategory = $request->input('newCategory');
         session(['newCategory' => $newCategory]);
-        return back();
+        return redirect()->route('category.showFormCat');
     }
 }
