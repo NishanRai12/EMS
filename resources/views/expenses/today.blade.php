@@ -45,18 +45,17 @@
             @php
                 $colors = ['bg-secondary','bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp
-            @foreach($cat as $index => $categories)
-                <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.todayShow', $categories->id) }}'">
+            @foreach($categories as $index => $category)
+                <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.todayShow', $category->id) }}'">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>{{ $categories->name }}</span>
-                        <a href="{{ route('expenses.create', ['category_id' => $categories->id]) }}">
+                        <span>{{ $category->name }}</span>
+                        <a href="{{ route('expenses.create', ['category_id' => $category->id]) }}">
                             <i class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>
                     <div class="card-body">
-                        <h6 class="card-title">Food Items:- {{ $foodCount[$categories->id]}} </h6>
-                        <h6 class="card-title">Total Cost:- {{$totalExpensesPerCat[$categories->id]}} </h6>
-
+                        <h6 class="card-title">Items: {{ $category->expenses->count() }}</h6>
+                        <h6 class="card-title">Cost: {{ $category->expenses->sum('amount') }}</h6>
                     </div>
                 </div>
             @endforeach

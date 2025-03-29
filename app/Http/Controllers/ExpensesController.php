@@ -21,70 +21,37 @@ class ExpensesController extends Controller
     public function index()
     {
 
-        $cat = Category:: all();
-        $expenses = Expenses::with('category')->where('user_id', Auth::id())->get();
-        //willstore the array of each category total expenses
-        $totalExpensesPerCat = [];
-        $foodCount = [];
-        foreach ($cat as $value) {
-            $totalExpensesPerCat[$value->id] = $expenses->where('category_id', $value->id)->sum('amount')??0;
-            $foodCount[$value->id] = $expenses->where('category_id', $value->id)->count()??0;
-        }
-//        dd($totalExpensesPerCat);
-        return view('expenses.index',compact('cat','totalExpensesPerCat','foodCount'));
+        //recent time and month
+        $date = Carbon::yesterday()->format('j');
+        $month = Carbon::yesterday()->format('F');
+
+        $categories = Category::with(['expenses'])->get();
+        return view('expenses.index',compact('categories','date','month'));
     }
     //displat the expenses of today
     public function today()
     {
-//        //eager loading retrieves related data along with the main model.
-//        $user = User::with('expenses')->get();
-//        foreach ($user as $value) {
-//            dd($value->expenses);
-//        }
-//
-//        //first fetch all the users then
-//         //then fetches related data only when it is accessed,
-//        $users= User::all();
-//        foreach ($users as $value) {
-////            dd($value->expenses);
-//            dd($value->expenses);
-//        }
-        //fetch all category
-        $cat = Category:: all();
-        //recent time and month
-        $date = Carbon::now()->format('j');
-        $month = Carbon::now()->format('F');
-        $expenses = Expenses::with('category')
-            ->where('user_id', Auth::id())
-            ->whereDate('created_at', Carbon::now()->toDateString())
-            ->get();
-
-        //willstore the array of each category total expenses
-        $totalExpensesPerCat = [];
-        $foodCount = [];
-        foreach ($cat as $value) {
-            $totalExpensesPerCat[$value->id] = $expenses->where('category_id', $value->id)->sum('amount')??0;
-            $foodCount[$value->id] = $expenses->where('category_id', $value->id)->count()??0;
-        }
-        return view('expenses.today',compact('cat','date','month','totalExpensesPerCat','foodCount'));
+        $date = Carbon::today()->format('j');
+        $month = Carbon::today()->format('F');
+        $categories = Category::with([
+            'expenses'=>function($query) {
+                $query->whereDate('created_at', Carbon::now()->toDateString());
+            }
+        ])->get();
+        return view('expenses.today', compact('categories','date','month'));
     }
     public function yesterday()
     {
-        //fetch all category
-        $cat = Category:: all();
         //recent time and month
         $date = Carbon::yesterday()->format('j');
         $month = Carbon::yesterday()->format('F');
-//        dd(Carbon::yesterday()->format('j'));
-        $expenses = Expenses::with('category')->where('user_id', Auth::id())->whereDate('created_at', Carbon::yesterday()->toDateString())->get();
-        //will store the array of each category total expenses
-        $totalExpensesPerCat = [];
-        $foodCount = [];
-        foreach ($cat as $value) {
-            $totalExpensesPerCat[$value->id] = $expenses->where('category_id', $value->id)->sum('amount')??0;
-            $foodCount[$value->id] = $expenses->where('category_id', $value->id)->count()??0;
-        }
-        return view('expenses.yesterday',compact('cat','date','month','totalExpensesPerCat','foodCount'));
+
+        $categories = Category::with([
+            'expenses'=>function($query) {
+             $query->whereDate('created_at', Carbon::yesterday()->toDateString());
+            }
+        ])->get();
+        return view('expenses.yesterday',compact('date','month','categories'));
     }
 
     /**
@@ -104,11 +71,6 @@ class ExpensesController extends Controller
     public function store(ExpensesRequest $request)
     {
         $cat_id = $request->input('category_id'); // Get category ID from the request
-        $currentMonth = Carbon::now()->month;
-//        $budget= MonthlyBudget::where('user_id',Auth::user()->id)->where('month', $currentMonth)->first();
-//        $budget = MonthlyBudget::where('user_id', Auth::id())
-//            ->where('month', $currentMonth)
-//            ->first();
         // Perform the transaction
         DB::transaction(function () use ($request, $cat_id) {
             $validated = $request->validated();
@@ -146,8 +108,6 @@ class ExpensesController extends Controller
         $expensesCat = Expenses::where('category_id', (int)$id)->whereDate('created_at',Carbon::yesterday()->toDateString())->get();
         return view('expenses.yesterdayShow', compact('expensesCat'));
     }
-
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -162,13 +122,15 @@ class ExpensesController extends Controller
      */
     public function update(ExpensesRequest $request, string $id)
     {
-        $validate=$request->validated();
-        $expenses = Expenses::where('id',$id)->first();
-        $expenses->update([
-            'title'=> $validate['title'],
-            'description'=> $validate['description'],
-            'amount'=> $validate['amount']
-        ]);
+        DB::transaction(function () use ($request, $id) {
+            $validate=$request->validated();
+            $expenses = Expenses::where('id',$id)->first();
+            $expenses->update([
+                'title'=> $validate['title'],
+                'description'=> $validate['description'],
+                'amount'=> $validate['amount']
+            ]);
+        });
         return redirect()->back()->with('success','Updated Successfully');
     }
 

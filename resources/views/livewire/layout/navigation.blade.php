@@ -28,15 +28,6 @@ new class extends Component
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     </div>
-{{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                        <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')" wire:navigate>--}}
-{{--                            {{ __('Categories') }}--}}
-{{--                        </x-nav-link>--}}
-{{--                    </div><div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                        <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate>--}}
-{{--                            {{ __('Users') }}--}}
-{{--                        </x-nav-link>--}}
-{{--                    </div>--}}
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('role.create')" :active="request()->routeIs('role.create')" wire:navigate>
                             {{ __('Role') }}
@@ -62,7 +53,7 @@ new class extends Component
                     </div>
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('category_user.show',Auth::user()->id)" :active="request()->routeIs('category_user.show')" wire:navigate>
+                        <x-nav-link :href="route('category.show',Auth::user()->id)" :active="request()->routeIs('category.show')" wire:navigate>
                             {{ __('Category') }}
                         </x-nav-link>
                     </div>

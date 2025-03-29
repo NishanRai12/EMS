@@ -29,11 +29,9 @@
             <!-- Circular Progress -->
             <div class="progress-circle text-dark">
                 @if($remaining <= -1)
-{{--                    <p style="color: red">{{$budget->expenses_sum_amount}}</p>--}}
-                <div style="color: #e47777">{{$remaining}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
+                    <p style="color: #e47777">{{$remaining}}</p>
                 @else
-                <div style="color: green">{{$remaining}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
-{{--                    <p style="color: green">{{$budget->expenses_sum_amount}}</p>--}}
+                    <p style="color: green">{{$remaining}}</p>
                 @endif
             </div>
                 <!-- Data Section -->
@@ -46,18 +44,13 @@
     </div>
 {{--    div for contents--}}
     <div class="container mt-4 d-flex justify-content-center">
-        <div class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.today')}}'">
+        <div style=" width: 15rem;margin-left: 20px" class="card p-4 shadow-sm"  onclick=" window.location.href='{{route('expenses.today')}}'">
             <h6 class="fw-bold">TODAY EXPENSES</h6>
             <p class="text-muted">Remaining = 1200</p>
             <div class="d-flex align-items-center" >
-                <!-- Circular Progress -->
-                <div class="progress-circle text-dark">
-                    <div>{{$todayExpenses}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
-                </div>
-                <!-- Data Section -->
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{ $todayExpenses??0}}</p>
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$todayTotal??0}}</p>
                 </div>
             </div>
@@ -66,32 +59,23 @@
             <h6 class="fw-bold">YESTERDAY'S EXPENSES</h6>
             <p class="text-muted">Remaining = 1200</p>
             <div class="d-flex align-items-center">
-                <!-- Circular Progress -->
-                <div class="progress-circle text-dark">
-                    <div>{{$yesterdayExpenses??0}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
-                </div>
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$yesterdayExpenses??0}}</p>
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{ $yesterdayTotal??0}}</p>
                 </div>
             </div>
         </div>
 
-        <div style="margin-left: 20px" class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.index')}}'">
+        <div style=" width: 15rem;margin-left: 20px" class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.index')}}'">
         <h6 class="fw-bold"> EXPENSES FOR {{strtoupper(\Carbon\Carbon::now()->format('F'))}}</h6>
             <p class="text-muted">Remaining = 1200</p>
 
             <div class="d-flex align-items-center">
-                <!-- Circular Progress -->
-                <div class="progress-circle text-dark">
-                    <div>{{$monthExpenses}}<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
-                </div>
 
-                <!-- Data Section -->
                 <div class="ms-4">
                     <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ?? 0}}</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$monthExpenses??0}}</p>
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$monthTotal??0}}</p>
                 </div>
             </div>

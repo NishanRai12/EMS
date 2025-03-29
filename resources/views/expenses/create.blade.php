@@ -97,7 +97,7 @@
                 @enderror
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea placeholder="Description" name="description" id="" cols="85" rows="4"></textarea>
+                    <textarea style ="width:57rem" placeholder="Description" name="description" id="" cols="85" rows="4"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="spend">Amount</label>

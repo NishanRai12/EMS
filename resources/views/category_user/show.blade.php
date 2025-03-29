@@ -54,7 +54,6 @@
             @endif
             <!-- Link to add percentage -->
             <a href="{{route('category_user.create')}}" style="margin-bottom: 20px" class="btn btn-primary">Assign Percentage</a>
-
             @php
                 $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp
@@ -71,7 +70,7 @@
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ route('category_user.edit', $categories->id) }}">Edit</a></li>
+                                <li><a class="dropdown-item" href="{{ route('category.edit', $categories->id) }}">Edit</a></li>
                                 <li>
                                     <form method="POST" action="{{ route('category_user.destroy', $categories->id) }}">
                                         @csrf

@@ -53,13 +53,10 @@
 
     <div class="main_div">
         <div class="child_div_1">
-            {{--            display the header--}}
-            <div class="header">ESTIMATE PERCENTAGE FOR {{ strtoupper( $category->category->name) }}</div>
-{{--            //display the current info--}}
+            <div class="header">ESTIMATE PERCENTAGE FOR {{ strtoupper( $category->name) }}</div>
             <div class="alert alert-info" role="alert">
                 The total percentage usage for all categories is: {{ $sumOfPercentage }}%
             </div>
-            {{--            display success message--}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -72,12 +69,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form action="{{ route('category_user.update', $category->category_id) }}" method="POST">
+            <form action="{{ route('category.update', $category->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-1">
                     <label for="percentage" class="label_input">Percentage</label><br>
-                    <input type="number" style="width: 607px" class="form_input" value="{{ old('percentage', $percentage ?? '') }}" name="percentage">
+                    <input type="number" style="width: 607px" class="form_input" value="{{ old('percentage', $category->pivot->percentage ?? '') }}" name="percentage">
                 </div>
                 <button type="submit">Update</button>
             </form>

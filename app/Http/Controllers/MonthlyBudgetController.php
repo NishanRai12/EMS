@@ -20,20 +20,22 @@ class MonthlyBudgetController extends Controller
      */
     public function index()
     {
-        $currentMonth = Carbon::now()->month;
-//        $budget = MonthlyBudget::withSum('expenses','amount')->where('month', $currentMonth)->where('user_id',Auth::user()->id)->first();
-        $remaining = ($budget->limit ?? 0) - ($budget->expenses_sum_amount ?? 0);
-        $todayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->sum('amount');
+        $user = Auth::user();
+        //total expense
+        $todayExpenses = Expenses::where('user_id',Auth::id())->whereDate('created_at', Carbon::today())->sum('amount');
         $yesterdayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->sum('amount');
         $monthExpenses =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->sum('amount'); $todayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->sum('amount');
+       //total product count
         $todayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->count();
         $yesterdayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->count();
         $monthTotal =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->count();
-        $forecast_percentage = CategoryUser::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('percentage');
-        $user_incoem = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
-//        dd($user_incoem);
-        $forecast = (($forecast_percentage*$user_incoem)/100);
-        return view('monthlyBudget.index',compact('remaining','todayExpenses','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast'));
+
+       //sum of percentage user forecasted to spend
+        $sumOfPercentage = $user->categories()->where('month',Carbon::now()->month)->withPivot('percentage')->sum('percentage');
+        $user_income = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
+        $forecast = (($sumOfPercentage*$user_income)/100);
+        $remaining = $forecast-$monthExpenses;
+        return view('monthlyBudget.index',compact('todayExpenses','remaining','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast'));
     }
 
     /**
@@ -67,7 +69,6 @@ class MonthlyBudgetController extends Controller
     public function show(string $id)
     {
         $budget = MonthlyBudget::where('user_id', $id)->get();
-
         return view('monthlyBudget.show', compact('budget'));
     }
 

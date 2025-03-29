@@ -98,7 +98,7 @@
                 @enderror
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea name="description" id="" cols="85" rows="4">{{old('description',$expenses->description)}}</textarea>
+                    <textarea style ="width:57rem" name="description" id="" cols="85" rows="4">{{old('description',$expenses->description)}}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="spend">Amount</label>

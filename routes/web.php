@@ -20,7 +20,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::resource('category',CategoryController::class)->middleware('adminCheck');;
+Route::resource('category',CategoryController::class);
 Route::resource('userReg',UserRegController::class);
 Route::resource('expenses',ExpensesController::class);
 Route::resource('income',IncomeController::class);
@@ -38,6 +38,7 @@ Route::resource('forecast',ForecastController::class);
 Route::resource('category_user',CategoryUserController::class);
 Route::resource('admin',AdminController::class)->middleware('adminCheck');
 Route::get('admin-permission', [AdminController::class, 'permission'])->name('admin.permission');
+Route::get('/admin/{month}/{user_id}', [AdminController::class, 'show'])->name('admin.show');
 
 Route::get('/display-users', [AdminController::class, 'users'])->name('admin.users');
 Route::resource('role',RoleController::class);

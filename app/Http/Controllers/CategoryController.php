@@ -6,6 +6,7 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Models\CategoryUser;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -56,22 +57,39 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
+        $user = User::find(Auth::id());
+        $percentage = $user->categories()->withPivot('percentage')->where('month',Carbon::now()->month)->get();
+        return view('category_user.show',compact('percentage'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the display the cat plus percentage
      */
     public function edit(string $id)
     {
-        //
+        $user = Auth::user();
+        $category= $user->categories()->where('category_id',$id)->withPivot('percentage')->first();
+        $sumOfPercentage = $user->categories()->where('month',Carbon::now()->month)->withPivot('percentage')->sum('percentage');
+        return view('category_user.edit',compact('category','sumOfPercentage'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the pivot table percentage of category
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user=Auth::user();
+        $oldPercentage = $user->categories()->withPivot('percentage')->where('month',Carbon::now()->month)->first()->pivot->percentage;
+        $newPercentage = $request->input('percentage');
+        $sumOfPercentage = $user->categories()->where('month',Carbon::now()->month)->withPivot('percentage')->sum('percentage');
+        $previewPercentage= $sumOfPercentage-$oldPercentage+$newPercentage;
+        if($previewPercentage >100){
+            return back()->with('error', 'The estimated percentage usage will be above 100%');
+        }
+        $user->categories()->syncWithoutDetaching([
+            $id => ['percentage' => $newPercentage]
+        ]);
+        return back()->with('success', 'The The percentage has been updated successfully.');
     }
 
     /**
@@ -80,6 +98,8 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $fetch = Category::where('id', $id)->first();
+        $fetch->expenses()->delete();
+        $fetch->users()->detach();
         $fetch->delete();
         return back();
     }
@@ -132,3 +152,4 @@ class CategoryController extends Controller
         return redirect()->route('category.showFormCat');
     }
 }
+

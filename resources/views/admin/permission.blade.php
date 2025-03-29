@@ -8,7 +8,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        {{--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>--}}
 
         <style>
             .main_div {
@@ -27,6 +26,7 @@
                 border-radius: 8px;
                 width: 100%;
                 max-width: 90%;
+                overflow-y: auto;
             }
 
             .header {
@@ -38,64 +38,58 @@
                 border-radius: 4px;
                 text-align: center;
             }
-            /* Month Buttons Container */
-            .months {
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
 
-            /* Individual Button Style */
-            .month-btn {
-                padding: 10px 13px;
-                font-size: 14px;
-                background-color: #BEC5EA;
-                color: black;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease, transform 0.2s ease;
-                margin: 5px;
-                text-decoration: none;
-            }
-            .month-btn:hover {
-                background-color: #8081b8;  /* Darker green */
-                transform: scale(1.1);  /* Slightly enlarge on hover */
+            /* Table styling */
+            .table th, .table td {
+                text-align: center;
             }
         </style>
     </head>
 
     <div class="main_div">
         <div class="child_div_1">
-
-            @foreach($allPermissions as $group => $permissions)
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2>{{ $group }}</h2> <!-- Display group name -->
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Permission Name</th>
-                                <th>Description</th> <!-- Add more columns if you have more fields -->
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($permissions as $permission)
+                @foreach($allPermissions as $group => $permissions)
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h2>{{ $group }}</h2>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td> <!-- Display index number -->
-                                    <td>{{ $permission->name }}</td> <!-- Assuming 'name' is the permission name field -->
-                                    <td>{{ $permission->description ?? 'No Description' }}</td> <!-- Assuming 'description' is a field (optional) -->
+                                    <th>SN</th>
+                                    <th>Permission Name</th>
+                                    <th>Action</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @foreach($permissions as $permission)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $permission->name }}</td>
+                                        <td>
+                                            @if($permission->roles()->exists()) <!-- Check if no roles are associated (pivot table empty) -->
+                                            <form method="POST" action="{{ route('admin.destroy', $permission->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <x-primary-button class="mt-4">Delete</x-primary-button>
+                                            </form>
+                                            @else
+                                                <form method="POST" action="{{ route('admin.store', $permission->id) }}">
+                                                    @csrf
+                                                    <x-primary-button class="mt-4" name="permission" value="{{ $permission->id }}">Update</x-primary-button>
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

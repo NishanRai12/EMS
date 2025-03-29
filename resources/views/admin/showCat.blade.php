@@ -68,15 +68,10 @@
 
     <div class="main_div">
         <div class="child_div_1">
-            {{--            display the header--}}
-            <div class="header">ESTIMATE CATEGORIES EXPENSES FOR {{strtoupper($currMonth) }} </div>
-            {{--            display success message--}}
-
-
+            <div class="header">ESTIMATE CATEGORIES EXPENSES FOR {{strtoupper($month) }} </div>
             <div class="months">
                 @foreach($months as $mon)
-                    <a class="month-btn" href="{{route('admin.show',$mon)}}">{{$mon}}</a>
-                    {{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
+                    <a class="month-btn" href="{{route('admin.show',[$mon,$user_id])}}">{{$mon}}</a>
                 @endforeach
 
             </div>
@@ -84,10 +79,10 @@
                 $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp
 
-            @foreach($percentage as $index => $categoryUser)
+            @foreach($forecast as $index => $forecastUser)
                 <div class="card {{ $colors[$index % count($colors)] }} text-white mb-3" style="max-width: 80%; margin-left: 10%">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>{{ $categoryUser->category->name??" " }} [{{ $categoryUser->percentage }}%]</span>
+                        <span>{{ $forecastUser->name??" " }} [{{$forecastUser->pivot->percentage}}%]</span>
                     </div>
                 </div>
             @endforeach
