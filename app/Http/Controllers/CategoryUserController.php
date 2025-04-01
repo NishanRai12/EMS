@@ -59,7 +59,7 @@ class CategoryUserController extends Controller
                     $user->categories()->attach($key, ['percentage' => $value, 'month' => $month]);
                 }
             }
-            return redirect()->route('category_user.show', Auth::user()->id);
+            return redirect()->back();
         }
     }
 

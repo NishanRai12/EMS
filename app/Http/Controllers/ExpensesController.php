@@ -21,12 +21,13 @@ class ExpensesController extends Controller
     public function index()
     {
 
-        //recent time and month
-        $date = Carbon::yesterday()->format('j');
-        $month = Carbon::yesterday()->format('F');
+        $month = Carbon::now()->format('m');
+        $categories = Category::with(['expenses' => function ($query) use($month) {
+            $query->whereMonth('created_at', $month)->where('user_id',Auth::id());
+        }])->get();
 
-        $categories = Category::with(['expenses'])->get();
-        return view('expenses.index',compact('categories','date','month'));
+//        dd($categories);
+        return view('expenses.index',compact('categories','month'));
     }
     //displat the expenses of today
     public function today()
@@ -35,7 +36,7 @@ class ExpensesController extends Controller
         $month = Carbon::today()->format('F');
         $categories = Category::with([
             'expenses'=>function($query) {
-                $query->whereDate('created_at', Carbon::now()->toDateString());
+                $query->whereDate('created_at', Carbon::now()->toDateString())->where('user_id',Auth::id());
             }
         ])->get();
         return view('expenses.today', compact('categories','date','month'));
@@ -48,7 +49,7 @@ class ExpensesController extends Controller
 
         $categories = Category::with([
             'expenses'=>function($query) {
-             $query->whereDate('created_at', Carbon::yesterday()->toDateString());
+             $query->whereDate('created_at', Carbon::yesterday()->toDateString())->where('user_id',Auth::id());
             }
         ])->get();
         return view('expenses.yesterday',compact('date','month','categories'));
@@ -95,17 +96,18 @@ class ExpensesController extends Controller
      */
     public function show(string $id)
     {
-        $expensesCat= Expenses::where('category_id',$id)->get();
+        $month = Carbon::now()->format('m');
+        $expensesCat= Expenses::where('category_id',$id)->whereMonth('created_at',$month)->get();
         return view('expenses.show',compact('expensesCat'));
     }
     public function todayShow(string $id)
     {
-        $expensesCat = Expenses::where('category_id', (int)$id)->whereDate('created_at',Carbon::now()->toDateString())->get();
+        $expensesCat = Expenses::where('category_id', $id)->whereDate('created_at',Carbon::now()->toDateString())->get();
         return view('expenses.todayShow', compact('expensesCat'));
     }
      public function yesterdayShow(string $id)
     {
-        $expensesCat = Expenses::where('category_id', (int)$id)->whereDate('created_at',Carbon::yesterday()->toDateString())->get();
+        $expensesCat = Expenses::where('category_id', $id)->whereDate('created_at',Carbon::yesterday()->toDateString())->get();
         return view('expenses.yesterdayShow', compact('expensesCat'));
     }
     /**

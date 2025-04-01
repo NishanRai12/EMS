@@ -79,24 +79,7 @@
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$monthTotal??0}}</p>
                 </div>
             </div>
-        </div><div style="margin-left: 20px" class="card p-4 shadow-sm">
-            <h6 class="fw-bold">LAST 7 DAY'S</h6>
-            <p class="text-muted">Remaining = 1200</p>
 
-            <div class="d-flex align-items-center">
-                <!-- Circular Progress -->
-                <div class="progress-circle text-dark">
-                    <div>1200<br><span class="text-muted" style="font-size: 14px;">Remaining</span></div>
-                </div>
-
-                <!-- Data Section -->
-                <div class="ms-4">
-                    <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
-                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$budget->expenses_sum_amount ??0}}</p>
-                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> 0</p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -122,10 +122,10 @@
     function validateIform(){
         document.getElementById('validateIform').submit();
     }
-    function nextPage(){
-        window.location.href = '{{route('category.newFormCat')}}';
-    }
-    function prevPage(){
-        window.location.href = '{{route('income.create')}}';
-    }
+    {{--function nextPage(){--}}
+    {{--    window.location.href = '{{route('category.newFormCat')}}';--}}
+    {{--}--}}
+    {{--function prevPage(){--}}
+    {{--    window.location.href = '{{route('income.create')}}';--}}
+    {{--}--}}
 </script>

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\IncomeRequest;
+use App\Models\Income;
 use Carbon\Carbon;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class IncomeController extends Controller
@@ -68,7 +71,7 @@ class IncomeController extends Controller
     }
     public function validate (IncomeRequest $request)
     {
-//        dd('hi');
+
             $month = Carbon::now()->format('n');
             $validatedData = $request->validated();
             session([
@@ -77,7 +80,19 @@ class IncomeController extends Controller
             'month'       => $month
             ]
             ]);
+        $user = Auth::user();
+        $month = Carbon::now()->format('n');
+        $does_exist=$user->Categories()->where('month', $month)->exists();
+        if($does_exist){
+            Income::create([
+                'user_id'=>Auth::id(),
+                'amount'      => $validatedData['amount'],
+                'month'       => $month,
+            ]);
+            return redirect()->route('monthlyBudget.index');
+        }else {
             return redirect()->route('category.newFormCat');
+        }
     }
 
 }

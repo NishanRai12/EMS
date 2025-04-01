@@ -73,21 +73,27 @@
                         <td>{{ $displayData->name }}</td>
                         <td>{{ $displayData->created_at }}</td>
                         <td>{{ $displayData->user->fullname() }}</td>
-{{--                        <td>{{ $displayData->id }}</td>--}}
-
+                        <td>{{ $displayData->users_count??0}}</td>
 
                         <td>
                             <div class="dropdown-center" style="display: flex; justify-content: end; ">
                                 <button style="background-color: white ; border: none;color : black ; place-content: center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-ellipsis-vertical"></i>
                                 </button>
+
                                     <ul class="dropdown-menu">
-        {{--                                <li><a class="dropdown-item" href="{{route('tag.edit',$displayData->id)}}" >Edit</a></li>--}}
-                                        <form method= "POST" action="{{route('category.destroy',$displayData->id)}}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="dropdown-item" type="Submit"> Delete</button>
-                                        </form>
+                                        @if($displayData->deleted_at == "")
+                                            <form method= "POST" action="{{route('category.destroy',$displayData->id)}}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="dropdown-item" type="Submit"> Delete</button>
+                                            </form>
+                                        @else
+                                            <form method= "POST" action="{{route('category.restore',$displayData->id)}}">
+                                                @csrf
+                                                <button class="dropdown-item" type="Submit"> Restore</button>
+                                            </form>
+                                        @endif
                                     </ul>
                             </div>
                         </td>

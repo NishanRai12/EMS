@@ -17,16 +17,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('user')->get();
-//        $totalUserCategories=$categories->mapWithKeys(function($categories){
-//            return [$categories->id=>CategoryUser::where('category_id',$categories->id)->distinct('user_id')->count()];
-//        });
-        $totalUserCategories = Category::leftJoin('category_user', 'categories.id', '=', 'category_user.category_id')
-            ->leftJoin('users', 'category_user.user_id', '=', 'users.id')
-            ->select('categories.id', 'categories.name', 'categories.user_id', DB::raw('COUNT(DISTINCT category_user.user_id) as users_count'))
-            ->groupBy('categories.id', 'categories.name', 'categories.user_id')
-            ->get();
-        return view('category.index', compact('categories','totalUserCategories'));
+        $categories = Category::withCount([
+            'users' => function ($query) {
+            $query->distinct();
+            }
+        ])->withTrashed()->get();
+        return view('category.index', compact('categories'));
     }
     /**
      * Show the form for creating a new resource.
@@ -44,7 +40,7 @@ class CategoryController extends Controller
         DB::transaction(function () use ($request) {
             $validatedData = $request->validated();
             Category::create([
-                'name' => $validatedData['cat_name'] , // Ensure key exists
+                'name' => $validatedData['cat_name'] ,
                 'user_id' => Auth::id()
             ]);
         });
@@ -98,13 +94,15 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $fetch = Category::where('id', $id)->first();
-        $fetch->expenses()->delete();
-        $fetch->users()->detach();
         $fetch->delete();
         return back();
     }
-
-
+    public function restore(string $id)
+    {
+        $fetch = Category::withTrashed()->find($id);
+        $fetch->restore();
+        return back();
+    }
     public function validate(CategoryRequest $request)
     {
         // Validate the request

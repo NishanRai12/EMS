@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Income;
 use App\Models\Percentage;
 use App\Models\Role;
+use App\Models\Statement;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,16 +29,18 @@ class FormController extends Controller
                     'first_name' => $form1Data['first_name'],
                     'last_name' => $form1Data['last_name'],
                     'email' => $form1Data['email'],
-                    'role' => 'user',
                     'password' => Hash::make($form1Data['password']),
                 ]);
                 $role = Role::where('role_name', 'user')->first();
                 $user->roles()->attach($role->id);
-                Income::create([
+                $income=Income::create([
                     'amount' => $incomeData['amount'],
                     'month' => $incomeData['month'],
                     'user_id'=> $user->id,
                 ]);
+                $statement = new Statement();
+                $statement->statementable()->associate($income);
+                $statement->save();
                 if($oldCatData){
                     foreach ($oldCatData as $key => $value){
                         if($value!=null){
@@ -67,9 +70,9 @@ class FormController extends Controller
                         'month' => $incomeData['month'],
                         'user_id'=> $user_id
                     ]);
-                    $income->statements()->create([
-                        'amount' => $incomeData['amount']
-                    ]);
+                    $statement = new Statement();
+                    $statement->statementable()->associate($income);
+                    $statement->save();
                 }
                 if($oldCatData){
                     foreach ($oldCatData as $key => $value){

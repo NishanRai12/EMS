@@ -19,42 +19,42 @@ class ForecastController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $months = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ];
-        $category= Category::all();
-        $currentMonth = Carbon::now()->format('F');
-        $currentMon = Carbon::now()->format('n');
-        $income = Income::where('user_id', Auth::id())
-            ->where('month', $currentMon)
-            ->first();
-        //percentage of the forecast
-        $Forecastpercentage = CategoryUser::where('user_id', Auth::id())->where('month', $currentMon)->sum('percentage');
-        // actual expenses of month
-        $expenses = Expenses::where('user_id', Auth::id())->whereMonth('created_at', $currentMon)->sum('amount');
-        //expenses into a number
-        $forecastExpenses = ($Forecastpercentage * $income->amount)/100;
-        //average
-        $nextMonthExpenses=($expenses + $forecastExpenses)/2;
-        //fetching from the pivot table
-        $categoryUser =  CategoryUser::where('user_id', Auth::id())->where('month', $currentMon)->get();
-        //this is the prediction for expenses
-        $catPer=[];
-        $actualExpenses=[];
-        foreach ($categoryUser as $findPer) {
-//            converting the percentage forecast into a numerical
-            $percentage[$findPer->category_id]=$findPer->percentage;
-            $catPer[$findPer->category_id]= ($findPer->percentage * $income->amount)/100 ??0;
-        }
-        //finding the expenses for each category in a number
-        foreach ($category as $cat) {
-            $actualExpenses [$cat->id]= Expenses::where('user_id', Auth::id())->whereMonth('created_at', $currentMon)->where('category_id',$cat->id)->sum('amount') ;
-        }
-        return view('forecast.index',compact('currentMonth','months','percentage','currentMon','income','category','forecastExpenses','nextMonthExpenses','catPer','actualExpenses',));
-    }
+//    public function index()
+//    {
+//        $months = [
+//            'January', 'February', 'March', 'April', 'May', 'June',
+//            'July', 'August', 'September', 'October', 'November', 'December'
+//        ];
+//        $category= Category::all();
+//        $currentMonth = Carbon::now()->format('F');
+//        $currentMon = Carbon::now()->format('n');
+//        $income = Income::where('user_id', Auth::id())
+//            ->where('month', $currentMon)
+//            ->first();
+//        //percentage of the forecast
+//        $Forecastpercentage = CategoryUser::where('user_id', Auth::id())->where('month', $currentMon)->sum('percentage');
+//        // actual expenses of month
+//        $expenses = Expenses::where('user_id', Auth::id())->whereMonth('created_at', $currentMon)->sum('amount');
+//        //expenses into a number
+//        $forecastExpenses = ($Forecastpercentage * $income->amount)/100;
+//        //average
+//        $nextMonthExpenses=($expenses + $forecastExpenses)/2;
+//        //fetching from the pivot table
+//        $categoryUser =  CategoryUser::where('user_id', Auth::id())->where('month', $currentMon)->get();
+//        //this is the prediction for expenses
+//        $catPer=[];
+//        $actualExpenses=[];
+//        foreach ($categoryUser as $findPer) {
+////            converting the percentage forecast into a numerical
+//            $percentage[$findPer->category_id]=$findPer->percentage;
+//            $catPer[$findPer->category_id]= ($findPer->percentage * $income->amount)/100 ??0;
+//        }
+//        //finding the expenses for each category in a number
+//        foreach ($category as $cat) {
+//            $actualExpenses [$cat->id]= Expenses::where('user_id', Auth::id())->whereMonth('created_at', $currentMon)->where('category_id',$cat->id)->sum('amount') ;
+//        }
+//        return view('forecast.index',compact('currentMonth','months','percentage','currentMon','income','category','forecastExpenses','nextMonthExpenses','catPer','actualExpenses',));
+//    }
 
     /**
      * Show the form for creating a new resource.
@@ -153,11 +153,6 @@ class ForecastController extends Controller
         }
         // actual expenses of month
         $expenses = Expenses::where('user_id', Auth::id())->whereMonth('created_at', $currentMon)->sum('amount');
-//        if($expenses){
-//           $totalExp= $expenses->sum('amount');
-//        }else{
-//            $totalExp = 0;
-//        }
         //average
         //fetching from the pivot table
         $categoryUser =  CategoryUser::where('user_id', Auth::id())->where('month', $currentMon)->get();

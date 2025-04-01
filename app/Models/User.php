@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+//use Illuminate\Container\Attributes\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -67,6 +69,15 @@ class User extends Authenticatable
     }
     public function roles(){
         return $this->belongsToMany(Role::class);
+    }
+    public function getRole(): ?Role
+    {
+        return $this->roles()->first(); // Get the first associated role
+    }
+    // Add this method to your User model to check if the user is an admin
+    public function isAdmin(): bool
+    {
+        return $this->roles()->where('role_name', 'admin')->exists(); // Check if the user has 'admin' role
     }
 }
 

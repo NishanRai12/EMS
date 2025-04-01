@@ -1,15 +1,14 @@
 <x-app-layout>
-    <!doctype html>
-    <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Navbar Example</title>
-        <!-- Bootstrap CSS -->
+        <title>Categories</title>
+
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
         <style>
             .main_div {
                 font-family: Arial, sans-serif;
@@ -17,12 +16,9 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin: 0;
-                height: 80vh;
             }
-
             .child_div_1 {
-                /*height: 90vh;*/
+                height: 80vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;
@@ -30,6 +26,7 @@
                 width: 100%;
                 max-width: 90%;
             }
+
             .header {
                 font-size: 18px;
                 font-weight: bold;
@@ -37,6 +34,7 @@
                 background: #e8eaf6;
                 padding: 10px;
                 border-radius: 4px;
+                text-align: center;
             }
             .form-group {
                 display: flex;
@@ -76,47 +74,46 @@
             }
         </style>
     </head>
-    <body>
+
     <div class="main_div">
-        <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">{{ $category->name}}</div>
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-            <form action="{{route('expenses.store')}}" method="POST">
-                @csrf
-                <input hidden name="category_id" value="{{ $category->id}}">
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input name="title" placeholder="Title">
-                </div>
-                @error('title')
-                    <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
-                @enderror
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea style ="width:57rem" placeholder="Description" name="description" id="" cols="85" rows="4"></textarea>
-                </div>
-                @error('description')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
-                @enderror
-                <div class="form-group">
-                    <label for="spend">Amount</label>
-                    <input placeholder="Amount" type="number" name="amount">
-                </div>
-                @error('amount')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
-                @enderror
-                <div class="button-group">
-                    <button type="submit" class="add">Add</button>
-                    <button type="reset" class="reset">Reset</button>
-                </div>
-            </form>
+        <div class="child_div_1">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>User Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Roles</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($user as $displayUsers)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $displayUsers->username }}</td>
+                            <td>{{ $displayUsers->first_name }}</td>
+                            <td>{{ $displayUsers->last_name }}</td>
+                            <td>{{ $displayUsers->getRole()->role_name }}</td>
+                            <td>{{ $displayUsers->name }}</td>
+                            <td>
+                                @if($displayUsers)
+                                <form>
+                                </form>
+                                @else
+                                    <form>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-    </body>
-    </html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

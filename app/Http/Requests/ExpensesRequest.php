@@ -23,7 +23,7 @@ class ExpensesRequest extends FormRequest
     {
         return [
             'title'=>['required'],
-            'description'=>['nullable','max:255'],
+            'description'=>['required','max:255'],
             'amount'=>['required','numeric','min:1'],
         ];
     }

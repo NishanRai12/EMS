@@ -17,42 +17,45 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth','access'])
     ->name('profile');
+Route::middleware(['access'])->group(function () {
+    Route::resource('category',CategoryController::class);
+    Route::resource('expenses',ExpensesController::class);
+    Route::resource('income',IncomeController::class);
+    Route::resource('forecast',ForecastController::class);
+    Route::resource('category_user',CategoryUserController::class);
 
-Route::resource('category',CategoryController::class);
-Route::resource('userReg',UserRegController::class);
-Route::resource('expenses',ExpensesController::class);
-Route::resource('income',IncomeController::class);
-Route::post('/validate-user', [UserRegController::class, 'validate'])->name('validate.user');
+    Route::resource('admin',AdminController::class);
+    Route::get('admin-permission', [AdminController::class, 'permission'])->name('admin.permission');
+    Route::get('/admin/{month}/{user_id}', [AdminController::class, 'show'])->name('admin.show');
+    Route::post('/category/restore/{id}', [CategoryController::class, 'restore'])->name('category.restore');
 
-Route::get('/submit-form',[FormController::class, 'finalSubmit'])->name('submit.finalSubmit');
 
-Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
-Route::post('/validate-cat', [CategoryController::class, 'validate'])->name('validate.cat');
-Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
-Route::post('/validate-income', [IncomeController::class, 'validate'])->name('validate.income');
-Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
-Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
-Route::resource('forecast',ForecastController::class);
-Route::resource('category_user',CategoryUserController::class);
-Route::resource('admin',AdminController::class)->middleware('adminCheck');
-Route::get('admin-permission', [AdminController::class, 'permission'])->name('admin.permission');
-Route::get('/admin/{month}/{user_id}', [AdminController::class, 'show'])->name('admin.show');
-
-Route::get('/display-users', [AdminController::class, 'users'])->name('admin.users');
-Route::resource('role',RoleController::class);
-//Route::resource()
+    Route::get('/display-users', [AdminController::class, 'users'])->name('admin.users');
+    Route::resource('role',RoleController::class);
 
 //dispaly the expenses of today
-Route::get('/today-expenses', [ExpensesController::class, 'today'])->name('expenses.today');
-Route::get('/yesterday-expenses', [ExpensesController::class, 'yesterday'])->name('expenses.yesterday');
-Route::get('/today-show/{id}', [ExpensesController::class, 'todayShow'])->name('expenses.todayShow');
-Route::get('/yesterday-show/{id}', [ExpensesController::class, 'yesterdayShow'])->name('expenses.yesterdayShow');
-Route::get('/expenses-show/{id}', [ForecastController::class, 'showExpenses'])->name('forecast.shoeExpenses');
-Route::middleware('catRegCheck','auth')->group(function(){
-Route::resource('monthlyBudget',MonthlyBudgetController::class);
+    Route::get('/today-expenses', [ExpensesController::class, 'today'])->name('expenses.today');
+    Route::get('/yesterday-expenses', [ExpensesController::class, 'yesterday'])->name('expenses.yesterday');
+    Route::get('/today-show/{id}', [ExpensesController::class, 'todayShow'])->name('expenses.todayShow');
+    Route::get('/yesterday-show/{id}', [ExpensesController::class, 'yesterdayShow'])->name('expenses.yesterdayShow');
+    Route::get('/expenses-show/{id}', [ForecastController::class, 'showExpenses'])->name('forecast.shoeExpenses');
 });
+
+Route::middleware(['catRegCheck','auth','access'])->group(function(){
+    Route::resource('monthlyBudget',MonthlyBudgetController::class);
+});
+
+Route::post('/validate-user', [UserRegController::class, 'validate'])->name('validate.user');
+Route::get('/submit-form',[FormController::class, 'finalSubmit'])->name('submit.finalSubmit');
+Route::post('/validate-income', [IncomeController::class, 'validate'])->name('validate.income');
+Route::post('/validate-cat', [CategoryController::class, 'validate'])->name('validate.cat');
+Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
+Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
+Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
+Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
+Route::resource('userReg',UserRegController::class);
 
 require __DIR__.'/auth.php';
 

@@ -22,14 +22,14 @@ new class extends Component
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                @if(\Illuminate\Support\Facades\Auth::user()->role == "admin")
+                @if(\Illuminate\Support\Facades\Auth::user()->isAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')" wire:navigate>
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('role.create')" :active="request()->routeIs('role.create')" wire:navigate>
+                        <x-nav-link :href="route('role.index')" :active="request()->routeIs('role.index')" wire:navigate>
                             {{ __('Role') }}
                         </x-nav-link>
                     </div>

@@ -14,18 +14,19 @@ new #[Layout('layouts.guest')] class extends Component {
      */
     public function login(): void
     {
+
         $this->validate();
 
         $this->form->authenticate();
 
+
         Session::regenerate();
         $user = Auth::user();
-        if ($user->role == "admin") {
+        if ($user && $user->isAdmin()) {
             $this->redirectIntended(default: route('admin.index', absolute: false), navigate: true);
         }else {
             $this->redirectIntended(default: route('monthlyBudget.index', absolute: false), navigate: true);
         }
-
     }
 }; ?>
 
