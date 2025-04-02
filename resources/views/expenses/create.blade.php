@@ -90,21 +90,21 @@
                 <input hidden name="category_id" value="{{ $category->id}}">
                 <div class="form-group">
                     <label for="title">Title</label>
-                    <input name="title" placeholder="Title">
+                    <input name="title" placeholder="title" value="{{ old('title', $title ?? '') }}">
                 </div>
                 @error('title')
                     <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
                 @enderror
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea style ="width:57rem" placeholder="Description" name="description" id="" cols="85" rows="4"></textarea>
+                    <textarea style ="width:57rem" placeholder="Description"  name="description"  id= "" cols="85" rows="4"> {{ old('description', $description ?? '') }} </textarea>
                 </div>
                 @error('description')
                 <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
                 @enderror
                 <div class="form-group">
                     <label for="spend">Amount</label>
-                    <input placeholder="Amount" type="number" name="amount">
+                    <input placeholder="Amount" type="number" name="amount" value ={{old('amount', $amount ?? '')}} >
                 </div>
                 @error('amount')
                 <div style="color: red ; margin-left: 32.6%">{{$message}}</div>

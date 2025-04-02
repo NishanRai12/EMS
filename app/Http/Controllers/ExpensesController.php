@@ -26,7 +26,6 @@ class ExpensesController extends Controller
             $query->whereMonth('created_at', $month)->where('user_id',Auth::id());
         }])->get();
 
-//        dd($categories);
         return view('expenses.index',compact('categories','month'));
     }
     //displat the expenses of today
@@ -55,6 +54,16 @@ class ExpensesController extends Controller
         return view('expenses.yesterday',compact('date','month','categories'));
     }
 
+    //function to display all category and its total expenses and count
+    public function displayYear(){
+//        dd('hello');
+        $thisYear = Carbon::now()->format('Y');
+        $month = Carbon::now()->format('m');
+        $categories = Category::with(['expenses' => function ($query) use ($thisYear) {
+            $query->whereYear('created_at',$thisYear)->where('user_id',Auth::id());
+        }])->get();
+        return view('expenses.year',compact('categories','month'));
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -69,6 +78,7 @@ class ExpensesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    //store yesterday expenses
     public function store(ExpensesRequest $request)
     {
         $cat_id = $request->input('category_id'); // Get category ID from the request
@@ -90,25 +100,70 @@ class ExpensesController extends Controller
         });
         return back()->with('success','Expense created successfully');
     }
+    //form to create yesterday expenses
+    public function pastExpensesForm(Request $request){
+        $categoryId = $request->category_id;
+        $updateDate=Carbon::yesterday()->toDateString();
+        $category = Category::where('id',$categoryId)->first();
+        return view('expenses.pastExpenses',compact('category','updateDate'));
+    }
+    public function createExpensesYear(Request $request)
+    {
+        $categoryId = $request->category_id;
+        $category = Category::where('id',$categoryId)->first();
 
+        return view('expenses.createExpensesYear',compact('category'));
+    }
+    //store expenses of yesterday
+    public function storePastExpenses(ExpensesRequest $request){
+//        dd($request->input('date'));
+        $cat_id = $request->input('category_id'); // Get category ID from the request
+        // Perform the transaction
+        DB::transaction(function () use ($request, $cat_id) {
+            $validated = $request->validated();
+            // Create the expense entry
+            $expenses= Expenses::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'category_id' => $cat_id,
+                'user_id' => Auth::id(),
+                'amount' => $validated['amount'],
+            ]);
+            $expenses->created_at = $validated['date'];
+            $expenses->save();
+            $expenses->statements()->create([
+                'amount' => $validated['amount']
+            ]);
+        });
+        return back()->with('success','Expense created successfully');
+    }
     /**
      * Display the specified resource.
      */
+    //display all the expenses of category of this month
     public function show(string $id)
     {
         $month = Carbon::now()->format('m');
         $expensesCat= Expenses::where('category_id',$id)->whereMonth('created_at',$month)->get();
         return view('expenses.show',compact('expensesCat'));
     }
+    //display all the expenses of category of today
     public function todayShow(string $id)
     {
         $expensesCat = Expenses::where('category_id', $id)->whereDate('created_at',Carbon::now()->toDateString())->get();
         return view('expenses.todayShow', compact('expensesCat'));
     }
+    //display all the expenses of category of ysterday
      public function yesterdayShow(string $id)
     {
         $expensesCat = Expenses::where('category_id', $id)->whereDate('created_at',Carbon::yesterday()->toDateString())->get();
         return view('expenses.yesterdayShow', compact('expensesCat'));
+    }
+    //display all the expenses of category of this year
+    public function yearShow(string $id){
+        $thisYear = Carbon::now()->format('Y');
+        $expensesCat = Expenses::where('category_id', $id)->whereYear('created_at',$thisYear)->get();
+        return view('expenses.yearShow', compact('expensesCat'));
     }
     /**
      * Show the form for editing the specified resource.

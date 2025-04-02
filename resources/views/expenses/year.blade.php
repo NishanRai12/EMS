@@ -39,17 +39,18 @@
         </style>
     </head>
     <body>
+
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <div class="header">EXPENSES FOR {{strtoupper($month).' '. $date}}</div>
+            <div class="header">EXPENSES FOR {{\Carbon\Carbon::now()->format('o')}}</div>
             @php
                 $colors = ['bg-secondary','bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp
             @foreach($categories as $index => $category)
-                <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.yesterdayShow', $category->id) }}'">
+                <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.yearShow', $category->id) }}'">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span>{{ $category->name }}</span>
-                        <a href="{{ route('expenses.pastExpensesForms', ['category_id' => $category->id]) }}">
+                        <a href="{{ route('expenses.createExpensesYear', ['category_id' => $category->id]) }}">
                             <i class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>

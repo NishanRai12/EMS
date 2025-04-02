@@ -24,7 +24,7 @@
     </head>
     <body>
     <div style="background-color: #3260a8 ; color: white" class="card p-4 shadow-sm">
-        <a  style="text-decoration: none; color: white" href="{{route('expenses.index')}}"> <h5 class="fw-bold">EXPENSES</h5> </a>
+        <a  style="text-decoration: none; color: white" href="{{route('expenses.index')}}"> <h5 class="fw-bold">EXPENSES FOR {{$thisYear}}</h5> </a>
         <div class="d-flex align-items-center">
             <!-- Circular Progress -->
             <div class="progress-circle text-dark">
@@ -79,6 +79,19 @@
                     <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$monthTotal??0}}</p>
                 </div>
             </div>
+        </div>
+        <div style=" width: 15rem;margin-left: 20px" class="card p-4 shadow-sm" onclick=" window.location.href='{{route('expenses.displayYear')}}'">
+            <h6 class="fw-bold"> EXPENSES FOR {{strtoupper(\Carbon\Carbon::now()->format('o'))}}</h6>
+            <p class="text-muted">Remaining = 1200</p>
+
+            <div class="d-flex align-items-center">
+                <div class="ms-4">
+                    <p><i class="fas fa-flag text-dark"></i> <strong>Base Goal</strong> <br> {{$budget->limit??0 }}</p>
+                    <p><i class="fas fa-wallet text-warning"></i> <strong>Expenses</strong> <br> {{$yearExpenses??0}}</p>
+                    <p><i class="fas fa-bag-shopping text-primary"></i> <strong>Total</strong> <br> {{$yearTotal??0}}</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 

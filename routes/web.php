@@ -55,6 +55,11 @@ Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('categ
 Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
 Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
 Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
+Route::get('/display-past-expenses-form', [ExpensesController::class, 'pastExpensesForm'])->name('expenses.pastExpensesForms');
+Route::post('/store-Expenses-Past/', [ExpensesController::class, 'storePastExpenses'])->name('expenses.pastExpensesStore');
+Route::get('/display-year',[ExpensesController::class, 'displayYear'])->name('expenses.displayYear');
+Route::get('/create-expenses-year/',[ExpensesController::class, 'createExpensesYear'])->name('expenses.createExpensesYear');
+Route::get('/show-year-cat/{id}',[ExpensesController::class, 'yearShow'])->name('expenses.yearShow');
 Route::resource('userReg',UserRegController::class);
 
 require __DIR__.'/auth.php';

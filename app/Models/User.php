@@ -74,7 +74,6 @@ class User extends Authenticatable
     {
         return $this->roles()->first(); // Get the first associated role
     }
-    // Add this method to your User model to check if the user is an admin
     public function isAdmin(): bool
     {
         return $this->roles()->where('role_name', 'admin')->exists(); // Check if the user has 'admin' role

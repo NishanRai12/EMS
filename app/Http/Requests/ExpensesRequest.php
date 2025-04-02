@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\DateValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExpensesRequest extends FormRequest
@@ -25,6 +26,7 @@ class ExpensesRequest extends FormRequest
             'title'=>['required'],
             'description'=>['required','max:255'],
             'amount'=>['required','numeric','min:1'],
+            'date'=>['required','date',new DateValidation],
         ];
     }
 

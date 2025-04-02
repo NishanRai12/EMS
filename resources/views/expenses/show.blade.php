@@ -98,7 +98,6 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th><input type="checkbox"></th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Date</th>
@@ -110,12 +109,10 @@
 
                 @foreach($expensesCat as $expenses)
                     <tr>
-                        <td><input type="checkbox"></td>
                         <td>{{$expenses->title}}</td>
                         <td>{{$expenses->description}}</td>
                         <td>{{$expenses->created_at}}</td>
                         <td>{{$expenses->amount}}</td>
-{{--                        <td>{{\Carbon\Carbon::parse($expenses->created_at)->format('j')}}</td>--}}
                         <td>
                             <div class="btn-container">
                                 <a href="{{ route('expenses.edit', $expenses->id) }}" class="btn btn-primary">Edit</a>

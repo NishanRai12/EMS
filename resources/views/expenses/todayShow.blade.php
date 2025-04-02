@@ -19,9 +19,8 @@
                 align-items: center;
                 margin: 0;
             }
-
             .child_div_1 {
-
+                height: 90vh;
                 margin-top: 30px;
                 background-color: #ffffff;
                 padding: 25px;
@@ -93,12 +92,9 @@
     <body>
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            {{--            <div class="header">Budget Allocation List [ <a style="color: #2a7ca6; text-decoration: none" href="{{route('monthlyBudget.create')}}">Add</a> ]</div>--}}
-
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th><input type="checkbox"></th>
                     <th>Title</th>
                     <th>Description</th>
                     <th>Amount</th>
@@ -109,11 +105,9 @@
 
                 @foreach($expensesCat as $expenses)
                     <tr>
-                        <td><input type="checkbox"></td>
                         <td>{{$expenses->title}}</td>
                         <td>{{$expenses->description}}</td>
                         <td>{{$expenses->amount}}</td>
-                        {{--                        <td>{{\Carbon\Carbon::parse($expenses->created_at)->format('j')}}</td>--}}
                         <td>
                             <div class="btn-container">
                                 <a href="{{ route('expenses.edit', $expenses->id) }}" class="btn btn-primary">Edit</a>
