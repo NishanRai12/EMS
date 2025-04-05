@@ -34,12 +34,6 @@ Route::middleware(['access'])->group(function () {
 
     Route::get('/display-users', [AdminController::class, 'users'])->name('admin.users');
     Route::resource('role',RoleController::class);
-
-//dispaly the expenses of today
-    Route::get('/today-expenses', [ExpensesController::class, 'today'])->name('expenses.today');
-    Route::get('/yesterday-expenses', [ExpensesController::class, 'yesterday'])->name('expenses.yesterday');
-    Route::get('/today-show/{id}', [ExpensesController::class, 'todayShow'])->name('expenses.todayShow');
-    Route::get('/yesterday-show/{id}', [ExpensesController::class, 'yesterdayShow'])->name('expenses.yesterdayShow');
     Route::get('/expenses-show/{id}', [ForecastController::class, 'showExpenses'])->name('forecast.shoeExpenses');
 });
 
@@ -55,11 +49,17 @@ Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('categ
 Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
 Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
 Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
-Route::get('/display-past-expenses-form', [ExpensesController::class, 'pastExpensesForm'])->name('expenses.pastExpensesForms');
-Route::post('/store-Expenses-Past/', [ExpensesController::class, 'storePastExpenses'])->name('expenses.pastExpensesStore');
-Route::get('/display-year',[ExpensesController::class, 'displayYear'])->name('expenses.displayYear');
-Route::get('/create-expenses-year/',[ExpensesController::class, 'createExpensesYear'])->name('expenses.createExpensesYear');
-Route::get('/show-year-cat/{id}',[ExpensesController::class, 'yearShow'])->name('expenses.yearShow');
+Route::post('/sort-expenses',[ExpensesController::class, 'sortExpenses'])->name('expenses.sortExpenses');
+Route::get('/show-expenses', [ExpensesController::class, 'show'])->name('expenses.showCatExpenses');
+Route::get('/show-search',[ExpensesController::class, 'search'])->name('expenses.search');
+Route::post('/search-result',[ExpensesController::class,'search'])->name('expenses.search');
+
+
+
+
+
+
+
 Route::resource('userReg',UserRegController::class);
 
 require __DIR__.'/auth.php';

@@ -114,9 +114,9 @@
                 @endphp
 
                 @foreach($months as $monthNumber => $monthName)
-                    @php
-                        $budgetEntry = $budget->where('month', $monthNumber)->first();
-                    @endphp
+{{--                    @php--}}
+{{--                        $budgetEntry = $budget->where('month', $monthNumber)->first();--}}
+{{--                    @endphp--}}
                     <tr>
                         <td><input type="checkbox"></td>
                         <td>{{ $monthName }}</td> <!-- Display Month Name -->

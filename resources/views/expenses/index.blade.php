@@ -20,7 +20,6 @@
                         margin: 0;
                     }
                     .child_div_1 {
-
                         margin-top: 30px;
                         background-color: #ffffff;
                         padding: 25px;
@@ -36,24 +35,50 @@
                         padding: 10px;
                         border-radius: 4px;
                     }
+                    .input-group {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 10px;
+                        align-items: center;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding-bottom: 15px;
+                        padding-top: 20px;
+                    }
+
                 </style>
             </head>
             <body>
                 <div class="main_div">
                     <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                        <div class="header">EXPENSES FOR {{strtoupper(\Carbon\Carbon::now()->format('F'))}}</div>
+                        @if($start_date == $end_date)
+                        <div class="header">EXPENSES FOR {{$start_date}}</div>
+                        @else
+                            <div class="header">EXPENSES FROM {{$start_date}} TO {{$end_date}}</div>
+                        @endif
+                        <form action="{{route('expenses.sortExpenses')}}" method="POST">
+                            @csrf
+                            <div class="input-group">
+                                <input type="date" name="start_date" class="form-control">
+                                <input type="date" name="end_date" class="form-control">
+                                <button class="btn btn-primary" type="submit">Filter</button>
+                            </div>
+                        </form>
                         @php
                             $colors = ['bg-secondary','bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
                         @endphp
                         @foreach($categories as $index => $category)
-                            <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.show', $category->id) }}'">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span>{{ $category->name }}</span>
-                                </div>
-                                <div class="card-body">
-                                    <h6 class="card-title">Items:- {{ $category->expenses->count()}} </h6>
-                                    <h6 class="card-title">Cost:- {{ $category->expenses->sum('amount')}} </h6>
-                                </div>
+                            <div class="card text-{{ $colors[$index % count($colors)] }} mb-3" style="max-width: 80%; margin-left: 10%" onclick="window.location.href='{{ route('expenses.showCatExpenses',['category_id'=>$category->id,'start_date'=>$start_date,'end_date'=>$end_date])}}'">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>{{ $category->name }}</span>
+                                        <a href="{{ route('expenses.create', ['category_id' => $category->id,'start_date'=>$start_date]) }}">
+                                            <i class="fa-regular fa-square-plus"></i>
+                                        </a>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="card-title">Items:- {{ $category->expenses->count()}} </h6>
+                                        <h6 class="card-title">Cost:- {{ $category->expenses->sum('amount')}} </h6>
+                                    </div>
                             </div>
                         @endforeach
                     </div>

@@ -100,7 +100,9 @@
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Date</th>
                     <th>Amount</th>
+                    <th>Categories</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -108,9 +110,11 @@
 
                 @foreach($expensesCat as $expenses)
                     <tr>
-                        <td>{{$expenses->title}}</td>
-                        <td>{{$expenses->description}}</td>
-                        <td>{{$expenses->amount}}</td>
+                        <td>{{$expenses->title??""}}</td>
+                        <td>{{$expenses->description??""}}</td>
+                        <td>{{$expenses->created_at??""}}</td>
+                        <td>{{$expenses->amount??""}}</td>
+                        <td>{{ $expenses->category_name }}</td>
                         {{--                        <td>{{\Carbon\Carbon::parse($expenses->created_at)->format('j')}}</td>--}}
                         <td>
                             <div class="btn-container">

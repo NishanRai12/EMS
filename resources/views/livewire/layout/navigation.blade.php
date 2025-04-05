@@ -16,6 +16,8 @@ new class extends Component
     }
 }; ?>
 
+
+
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -67,15 +69,8 @@ new class extends Component
                             {{ __('Budget') }}
                         </x-nav-link>
                     </div>
-{{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                        <x-nav-link :href="route('role.create'" :active="request()->routeIs('role.create')" wire:navigate>--}}
-{{--                            {{ __('Roles') }}--}}
-{{--                        </x-nav-link>--}}
-{{--                    </div>--}}
-
                 @endif
             </div>
-
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -92,7 +87,6 @@ new class extends Component
                             </div>
                         </button>
                     </x-slot>
-
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}

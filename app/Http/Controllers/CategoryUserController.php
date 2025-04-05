@@ -64,37 +64,6 @@ class CategoryUserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-//        $user = User::find(Auth::id());
-//        $percentage = $user->categories()->withPivot('percentage')->where('month',Carbon::now()->month)->get();
-//        return view('category_user.show',compact('percentage'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-//    public function edit(string $id)
-//    {
-//        $category = CategoryUser::with('category')->where('user_id',Auth::id())->where('category_id',$id)->first();
-//        //it will display the current precentage usage
-//        $sumOfPercentage = CategoryUser::where('user_id', Auth::id())->where('month', \Illuminate\Support\Carbon::now()->month)->sum('percentage');
-//        $percentage = $category->percentage;
-//
-//        return view('category_user.edit',compact('category','percentage','sumOfPercentage'));
-//    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-//    public function update(Request $request, string $id)
-//    {
-//
-//    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)

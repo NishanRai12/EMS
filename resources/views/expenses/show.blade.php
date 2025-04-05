@@ -113,6 +113,7 @@
                         <td>{{$expenses->description}}</td>
                         <td>{{$expenses->created_at}}</td>
                         <td>{{$expenses->amount}}</td>
+                        {{--                        <td>{{\Carbon\Carbon::parse($expenses->created_at)->format('j')}}</td>--}}
                         <td>
                             <div class="btn-container">
                                 <a href="{{ route('expenses.edit', $expenses->id) }}" class="btn btn-primary">Edit</a>

@@ -17,18 +17,15 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin: 0;
-                height: 80vh;
+                min-height: 100vh;
             }
-
             .child_div_1 {
-                /*height: 90vh;*/
-                margin-top: 30px;
                 background-color: #ffffff;
-                padding: 25px;
+                padding: 30px;
                 border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                 width: 100%;
-                max-width: 90%;
+                max-width: 600px;
             }
             .header {
                 font-size: 18px;
@@ -38,22 +35,27 @@
                 padding: 10px;
                 border-radius: 4px;
             }
-            .form-group {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                margin-bottom: 10px;
-            }
-            .form-group label {
-                flex: 1 1 30%;
-                margin-bottom: 5px;
-                font-size: 14px;
-            }
-            .form-group input, .form-group select {
-                flex: 1 1 65%;
-                padding: 8px;
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                width: 100%;
+                padding: 10px;
                 border: 1px solid #ccc;
-                border-radius: 4px;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .form-group input[type="date"] {
+                cursor: pointer;
+            }
+            .error-message {
+                color: red;
+                font-size: 12px;
+                margin-top: -10px;
+                margin-bottom: 10px;
+                margin-left: 10px;
             }
             .button-group {
                 display: flex;
@@ -66,46 +68,55 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
+            .form-group label {
+                font-size: 14px;
+                margin-bottom: 8px;
+                color: #333;
+            }
             .add {
                 background: #007bff;
-                color: #fff;
-            }
-            .reset {
-                background: #dc3545;
                 color: #fff;
             }
         </style>
     </head>
     <body>
     <div class="main_div">
-        <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-{{--            <div class="header">{{ $category->name}}</div>--}}
+        <div style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
                 </div>
             @endif
-            <form action="{{route('expenses.update',$expenses->id)}}" method="POST">
+            <form action="{{route('expenses.update',$expenses->id)}}" method="POST" onsubmit="return confirmSubmit()">
                 @csrf
                 @method('PUT')
-{{--                <input hidden name="category_id" value="{{ $category->id}}">--}}
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input name="title" value="{{ old('title', $expenses->title) }}">
                 </div>
                 @error('title')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
+                <div class="error-message">{{ $message }}</div>
                 @enderror
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea style ="width:57rem" name="description" id="" cols="85" rows="4">{{old('description',$expenses->description)}}</textarea>
+                    <textarea name="description">{{ old('description', $expenses->description) }}</textarea>
                 </div>
+                @error('description')
+                <div class="error-message">{{ $message }}</div>
+                @enderror
                 <div class="form-group">
                     <label for="spend">Amount</label>
-                    <input placeholder="Amount" value="{{old('amount',$expenses->amount)}}" type="number" name="amount">
+                    <input placeholder="Amount" value="{{ old('amount', $expenses->amount) }}" type="number" name="amount">
                 </div>
                 @error('amount')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
+                <div class="error-message">{{ $message }}</div>
+                @enderror
+                <div class="form-group">
+                    <label for="spend">Date</label>
+                    <input id="date" type="date" value="{{ old('created_at', \Carbon\Carbon::parse($expenses->created_at)->toDateString()) }}" name="date">
+                </div>
+                @error('date')
+                <div class="error-message">{{ $message }}</div>
                 @enderror
                 <div class="button-group">
                     <button type="submit" class="add">Update</button>
@@ -113,7 +124,16 @@
             </form>
         </div>
     </div>
-
+    <script>
+        function confirmSubmit() {
+            var date = document.getElementById('date').value; // Get the value of the date input field
+            if (!date) {
+                alert("Please select a date.");
+                return false; // Prevent form submission if no date is selected
+            }
+            return confirm("Are you sure the date is " + date + "?"); // Confirmation message with date
+        }
+    </script>
     </body>
     </html>
 </x-app-layout>
