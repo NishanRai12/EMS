@@ -53,7 +53,7 @@
 
     <div class="main_div">
         <div class="child_div_1">
-            <div class="header">ESTIMATE PERCENTAGE FOR {{ strtoupper( $category->name) }}</div>
+            <div class="header">ESTIMATE PERCENTAGE FOR {{ strtoupper($category->category->name) }}</div>
             <div class="alert alert-info" role="alert">
                 The total percentage usage for all categories is: {{ $sumOfPercentage }}%
             </div>
@@ -69,15 +69,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form action="{{ route('category.update', $category->id) }}" method="POST">
+            <form action="{{ route('percentage.update', $category->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="mb-1">
                     <label for="percentage" class="label_input">Percentage</label><br>
-                    <input type="number" style="width: 607px" class="form_input" value="{{ old('percentage', $category->pivot->percentage ?? '') }}" name="percentage">
+                    <input type="number" style="width: 607px" class="form_input" value="{{ old('percentage', $category->category->percentage ?? '') }}" name="percentage">
                 </div>
                 <button type="submit">Update</button>
             </form>
+    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </x-app-layout>

@@ -81,7 +81,7 @@ class UserRegController extends Controller
                 'last_name' => $validate['last_name']
             ]
         ]);
-        return view('userReg.newIncome');
+        return redirect()->route('income.create');
     }
 
 }

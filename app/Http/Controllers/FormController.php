@@ -38,14 +38,21 @@ class FormController extends Controller
                     'month' => $incomeData['month'],
                     'user_id'=> $user->id,
                 ]);
-                $statement = new Statement();
-                $statement->statementable()->associate($income);
-                $statement->save();
+                $income ->statements()->create([
+                    'amount' => $incomeData['amount']
+                ]);
                 if($oldCatData){
                     foreach ($oldCatData as $key => $value){
                         if($value!=null){
                             //attaching on the pivot table
-                            $user->categories()->attach($key,['percentage'=>$value,'month'=>Carbon::now()->format('n')]);
+                            Percentage::create([
+                                'user_id'    => $user->id,
+                                'category_id'=> $key,
+                                'percentage' => $value,
+                                'month'      => Carbon::now()->format('n'),
+                                'year'       => Carbon::now()->year,
+                            ]);
+                            $user->categories()->attach($key,['year'=>Carbon::now()->year,'month'=>Carbon::now()->format('n')]);
                         }
                     }
                 }
@@ -70,15 +77,20 @@ class FormController extends Controller
                         'month' => $incomeData['month'],
                         'user_id'=> $user_id
                     ]);
-                    $statement = new Statement();
-                    $statement->statementable()->associate($income);
-                    $statement->save();
+                    $income ->statements()->create([
+                        'amount' => $incomeData['amount']
+                    ]);
                 }
                 if($oldCatData){
                     foreach ($oldCatData as $key => $value){
                         if($value!=null){
-                            //attaching on the pivot table
-                            $user->categories()->attach($key,['percentage'=>$value,'month'=>$month]);
+                            Percentage::create([
+                                'user_id'    => $user->id,
+                                'category_id'=> $key,
+                                'percentage' => $value,
+                                'month'      => Carbon::now()->format('n'),
+                                'year'       => Carbon::now()->year,
+                            ]);
                         }
                     }
                 }

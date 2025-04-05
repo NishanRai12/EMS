@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Category;
 use App\Models\Income;
+use App\Models\Percentage;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
@@ -20,9 +21,9 @@ class DataExistance
      */
     public function handle(Request $request, Closure $next): Response
     {
-//        $currLoggedInUser = Auth::user();
         $currMonth = Carbon::now()->format('n');
-        $category = DB::table("category_user")->where("user_id", Auth::user()->id)->exists();
+        $currYear = Carbon::now()->format('Y');
+        $findPer = Percentage::where('user_id', Auth::id())->where('month', $currMonth)->where('year', $currYear)->exists();
         $income = Income::where('user_id', Auth::user()->id)->where('month', $currMonth)->exists();
         if(Auth::user()->role=="admin"){
             return $next($request);
@@ -30,7 +31,7 @@ class DataExistance
             if(!$income){
                 return to_route('income.create');
             }
-            if (!$category) {
+            if (!$findPer) {
                 return to_route('category.showFormCat');
             }
             else{

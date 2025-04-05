@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\DateValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ExpensesRequest extends FormRequest
+class SortRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,8 @@ class ExpensesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'=>['required'],
-            'description'=>['required'],
-            'amount'=>['required','numeric','min:1'],
-            'date'=>['required','date',new DateValidation],
+            'start_date' => ['required', 'date',new DateValidation],
+            'end_date' => ['required', 'date',new DateValidation]
         ];
     }
-
 }

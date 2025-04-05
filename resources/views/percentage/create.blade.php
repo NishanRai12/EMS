@@ -89,7 +89,7 @@
             @if(session('catNull'))
                 <script>alert('Category cannot be null')</script>
             @endif
-            <form action="{{route('category_user.store')}}" method="POST">
+            <form action="{{route('percentage.store')}}" method="POST">
                 @csrf
                 @foreach($category as $categoriesData)
                     <div class="form-check">

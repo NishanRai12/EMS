@@ -1,79 +1,68 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register Credentials</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <style>
-        .container {
-            margin-top: 12%;
-            height: 500px;
-            overflow: hidden;
-            border: 1px solid #333;
-            position: relative;
-            background-color: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-        }
+</html>
 
-        .content-wrapper {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            width: 100%;
-        }
+    <!doctype html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Navbar Example</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <style>
+            .main_div {
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                height: 100vh;
+            }
 
-        .content {
-            margin-top: 30px;
-            min-width: 100%;
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            margin-left: 130px;
-        }
+            .child_div_1 {
+                background-color: #ffffff;
+                padding: 25px;
+                border-radius: 8px;
+                height: 32rem;
+            }
 
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+            button {
+                width: 6rem;
+                padding: 8px ;
+                font-size: 16px;
+                cursor: pointer;
+                border: none;
+                background-color: #3260a8;
+                color: white;
+                border-radius: 5px;
+            }
 
-        button {
-            padding: 8px ;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            background-color: #3260a8;
-            color: white;
-            border-radius: 5px;
-        }
+            button:disabled {
+                background-color: gray;
+                cursor: not-allowed;
+            }
+            .form_input {
+                width: 300px;
+            }
+            input{
+                height: 35px;
+            }
+            h1 {
+                font-family: 'Arial', sans-serif;
+                color: #3260a8;
+                font-size: 3rem;
+                font-weight: bold;
+            }
 
-        button:disabled {
-            background-color: gray;
-            cursor: not-allowed;
-        }
-        .form_input {
-            width: 300px;
-        }
-
-        h1 {
-            font-family: 'Arial', sans-serif;
-            color: #3260a8;
-            font-size: 3rem;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div id="contentWrapper" class="content-wrapper">
-        <div class="content">
-            <h1>Registration</h1>
+        </style>
+    </head>
+    <body>
+    <div class="main_div">
+        <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+            <h1>REGISTRATION</h1>
             <form action="{{route('validate.user')}}" method="POST" id="validateRform">
                 @csrf
                 <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
@@ -113,27 +102,26 @@
                 @error('email')
                 <div style="color: red">{{ $message }}</div>
                 @enderror
-
-
                 <div class="mb-1">
                     <label for="password" class="label_input">Password</label><br>
-                    <input type="password" style="width: 607px" class="form_input" value="{{ old('password', $password ?? '') }}" name="password" id="password">
+                    <input type="password" style="width: 607px" class="form_input" name="password" id="password">
                 </div>
+                <div class="mb-1">
+                    <label for="password" class="label_input">Confirm password</label><br>
+                    <input type="password" style="width: 607px" class="form_input" name="password_confirmation" >
+                </div>
+                @error('password')
+                <div style="color: red">{{ $message }}</div>
+                @enderror
                 <button type="reset">Reset</button>
                 <button onclick="validateForm()">Next</button>
             </form>
         </div>
     </div>
-</div>
-<script>
-    function validateRForm(){
-                document.getElementById('validateRform').submit();
-    }
-</script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+    </html>
 
 
-
-
-
-</body>
-</html>

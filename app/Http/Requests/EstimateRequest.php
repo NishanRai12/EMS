@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\DateValidation;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ExpensesRequest extends FormRequest
+class EstimateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,18 +15,21 @@ class ExpensesRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * jkb the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'title'=>['required'],
-            'description'=>['required'],
-            'amount'=>['required','numeric','min:1'],
-            'date'=>['required','date',new DateValidation],
+            'percentages' => 'array',
+            'percentages.*' => 'required|numeric|min:1|max:100'
         ];
     }
-
+    public function attributes()
+    {
+        return [
+            'percentages.*' => 'percentage',
+        ];
+    }
 }

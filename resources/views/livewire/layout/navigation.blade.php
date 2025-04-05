@@ -58,8 +58,13 @@ new class extends Component
                         </x-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('percentage.show',Auth::user()->id)" :active="request()->routeIs('percentage.show')" wire:navigate>
+                            {{ __('Estimate') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('forecast.shoeExpenses',\Carbon\Carbon::now()->format('F'))" :active="request()->routeIs('forecast.index')" wire:navigate>
-                            {{ __('Forecast Expenses') }}
+                            {{ __('Forecast') }}
                         </x-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -67,16 +72,8 @@ new class extends Component
                             {{ __('Budget') }}
                         </x-nav-link>
                     </div>
-{{--                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">--}}
-{{--                        <x-nav-link :href="route('role.create'" :active="request()->routeIs('role.create')" wire:navigate>--}}
-{{--                            {{ __('Roles') }}--}}
-{{--                        </x-nav-link>--}}
-{{--                    </div>--}}
-
                 @endif
             </div>
-
-
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -92,7 +89,6 @@ new class extends Component
                             </div>
                         </button>
                     </x-slot>
-
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}

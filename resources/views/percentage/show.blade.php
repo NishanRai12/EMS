@@ -53,7 +53,7 @@
                 </div>
             @endif
             <!-- Link to add percentage -->
-            <a href="{{route('category_user.create')}}" style="margin-bottom: 20px" class="btn btn-primary">Assign Percentage</a>
+            <a href="{{route('percentage.create')}}" style="margin-bottom: 20px" class="btn btn-primary">Assign Percentage</a>
             @php
                 $colors = ['bg-secondary', 'bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
             @endphp
@@ -61,18 +61,16 @@
             @foreach($percentage as $index => $categories)
                 <div class="card {{ $colors[$index % count($colors)] }} text-white mb-3" style="max-width: 80%; margin-left: 10%">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>{{ $categories->name }} [{{ $categories->pivot->percentage }}%]</span>
-{{--                        <span>{{ $categories->id}}</span>--}}
-
+                        <span>{{ $categories->category->name }} [{{ $categories->percentage ?? 0}}%]</span>
                         <!-- Dropdown Button -->
                         <div class="dropdown">
                             <button class="btn btn-sm text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ route('category.edit', $categories->id) }}">Edit</a></li>
+                                <li><a class="dropdown-item" href="{{ route('percentage.edit', $categories->category->id) }}">Edit</a></li>
                                 <li>
-                                    <form method="POST" action="{{ route('category_user.destroy', $categories->id) }}">
+                                    <form method="POST" action="{{ route('percentage.destroy', $categories->category->id) }}">
                                         @csrf
                                         @method('DELETE')
                                         <button class="dropdown-item text-danger" type="submit">Delete</button>

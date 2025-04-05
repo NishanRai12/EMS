@@ -62,7 +62,10 @@ class User extends Authenticatable
         return $this->hasMany(Expenses::class);
     }
     public function categories(){
-        return $this->belongsToMany(Category::class)->withPivot('percentage','month');
+        return $this->belongsToMany(Category::class);
+    }
+    public function percentages(){
+        return $this->hasMany(Percentage::class);
     }
     public function fullname(){
         return $this->first_name . ' ' . $this->last_name;

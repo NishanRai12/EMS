@@ -15,14 +15,14 @@ class CategoryRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * jkb the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'cat_name' => 'required|unique:categories,name|max:20|min:3|string',
+            'cat_name' => 'required|max:20|min:3|string',
         ];
     }
 }

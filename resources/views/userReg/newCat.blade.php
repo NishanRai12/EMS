@@ -71,7 +71,6 @@
 <div class="container">
     <div class="content-wrapper">
         <div class="content">
-            <h1>ADD CATEGORY</h1>
             <form action="{{ route('category.getDataCat') }}" method="POST">
                 @csrf
                 <div style="display: flex; align-items: center;">
@@ -98,7 +97,7 @@
 
 <script>
     function nextPage(){
-        window.location.href = '{{route('category.showFormCat')}}';
+        window.location.href = '{{route('submit.finalSubmit')}}';
     }
 
     // Convert existing categories to lowercase for case-insensitive comparison

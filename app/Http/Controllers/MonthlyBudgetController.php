@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use mysql_xdevapi\Collection;
+use function Laravel\Prompts\select;
 
 class MonthlyBudgetController extends Controller
 {
@@ -22,33 +23,27 @@ class MonthlyBudgetController extends Controller
     {
         $user = Auth::user();
         $thisYear = Carbon::now()->format('Y');
-
-//        $expense=DB::table('expenses')
-//            ->select('expenses.user_id','expenses.created_at',)
-//            ->whereDate('created_at', '=', Carbon::now()->day)
-//            ->where('user_id',Auth::id())
-//            ->where(DB::raw('SUM(expenses.amount WHERE ) as amount'))
-//            ->get();
-//        dd($expense);
-////
-        //total expense for this year
-        $todayExpenses = Expenses::where('user_id',Auth::id())->whereDate('created_at', Carbon::today())->whereYear('created_at',$thisYear)->sum('amount');
-        $yesterdayExpenses = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->whereYear('created_at',$thisYear)->sum('amount');
-        $monthExpenses =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->whereYear('created_at',$thisYear)->sum('amount');
-        $yearExpenses =  Expenses::where('user_id',Auth::user()->id)->whereYear('created_at', $thisYear )->sum('amount');
-
-        //total product count for this year
-        $todayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::today())->whereYear('created_at',$thisYear)->count();
-        $yesterdayTotal = Expenses::where('user_id',Auth::user()->id)->whereDate('created_at', Carbon::yesterday())->whereYear('created_at',$thisYear)->count();
-        $monthTotal =  Expenses::where('user_id',Auth::user()->id)->whereMonth('created_at', Carbon::today())->whereYear('created_at',$thisYear)->count();
-        $yearTotal = Expenses::where('user_id',Auth::user()->id)->whereYear('created_at', $thisYear )->count();
-
+        $totalExpenses = DB::table('expenses')
+            ->select('expenses.user_id',
+                DB::raw("
+                    SUM(CASE WHEN DATE(created_at) = CURRENT_DATE()  AND YEAR(created_at) = YEAR(CURRENT_DATE())THEN amount ELSE NULL END) AS todayExpenses,
+                    SUM(CASE WHEN DATE(created_at) = CURRENT_DATE() - INTERVAL 1 DAY AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS yesterdayExpenses,
+                    SUM(CASE WHEN YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS thisYearExpenses,
+                    SUM(CASE WHEN MONTH(created_at)= MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS monthExpenses,
+                    COUNT(CASE WHEN DATE(created_at) = CURRENT_DATE() AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN id  END) AS todayExpensesCount,
+                    COUNT(CASE WHEN DATE(created_at) = CURRENT_DATE() - INTERVAL 1 DAY AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS yesterdayExpensesCount,
+                     COUNT(CASE WHEN YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS thisYearExpensesCount,
+                    COUNT(CASE WHEN MONTH(created_at)= MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS monthExpensesCount
+                "))
+            ->where('user_id',Auth::id())
+            ->groupBy('expenses.user_id')->first();
+        $getExpenses = Expenses::orderBy('created_at','DESC')->limit(4)->get();
        //sum of percentage user forecasted to spend
-        $sumOfPercentage = $user->categories()->where('month',Carbon::now()->month)->withPivot('percentage')->sum('percentage');
+        $sumOfPercentage = $user->percentages()->where('month',Carbon::now()->month)->sum('percentage');
         $user_income = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
         $forecast = (($sumOfPercentage*$user_income)/100);
-        $remaining = $forecast-$monthExpenses;
-        return view('monthlyBudget.index',compact('todayExpenses','remaining','yesterdayExpenses','monthExpenses','todayTotal','yesterdayTotal','monthTotal','forecast','yearExpenses','yearTotal','thisYear'));
+//        $remaining = $forecast-$totalExpenses->monthExpenses;
+        return view('monthlyBudget.index',compact('totalExpenses','forecast','thisYear','getExpenses'));
     }
 
     /**

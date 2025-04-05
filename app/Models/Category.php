@@ -14,19 +14,19 @@ class Category extends Model
         'user_id'
     ];
     public function users(){
-        return $this->belongsToMany(User::class)->withPivot('percentage','month');
+        return $this->belongsToMany(User::class);
     }
     public function user()
     {
-        return $this->belongsTo(User::class); // 'user_id' is automatically assumed
+        return $this->belongsTo(User::class);
+    }
+    public function percentages()
+    {
+        return $this->hasMany(Percentage::class);
     }
 
-    public function expenses(){
+    public function expenses()
+    {
         return $this->hasMany(Expenses::class);
     }
-    public function percentage(){
-        return $this->hasOne(Percentage::class);
-    }
-
-
 }

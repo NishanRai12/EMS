@@ -61,58 +61,54 @@
                 text-decoration: none;
             }
             .month-btn:hover {
-                background-color: #8081b8;  /* Darker green */
-                transform: scale(1.1);  /* Slightly enlarge on hover */
+                background-color: #8081b8;
+                transform: scale(1.1);
             }
             .income {
-                margin-bottom: 20px; /* Add space between each div */
-                padding: 15px; /* Add padding for better readability */
-                border-radius: 8px; /* Rounded corners */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-                font-family: Arial, sans-serif; /* Use a clean font for text */
-                color: #333; /* Default text color */
-                background-color: #e8f5e9; /* Light green background */
-                border-left: 5px solid #00bcd4; /* Cyan border for distinction */
+                margin-bottom: 20px;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+                color: #333;
+                background-color: #e8f5e9;
+                border-left: 5px solid #00bcd4;
             }
 
-            /* Specific styles for Expenses Prediction */
             .prediction {
-                margin-bottom: 20px; /* Add space between each div */
-                padding: 15px; /* Add padding for better readability */
-                border-radius: 8px; /* Rounded corners */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-                font-family: Arial, sans-serif; /* Use a clean font for text */
-                color: #333; /* Default text color */
-                background-color: #fff3e0; /* Light orange background */
-                border-left: 5px solid #ff9800; /* Orange border for distinction */
+                margin-bottom: 20px;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+                color: #333;
+                background-color: #fff3e0;
+                border-left: 5px solid #ff9800;
             }
-
-            /* Specific styles for Actual Expenses */
             .actual {
-                margin-bottom: 20px; /* Add space between each div */
-                padding: 15px; /* Add padding for better readability */
-                border-radius: 8px; /* Rounded corners */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-                font-family: Arial, sans-serif; /* Use a clean font for text */
-                color: #333; /* Default text color */
-                background-color: #e0f7fa; /* Light cyan background */
-                border-left: 5px solid #4caf50; /* Green border for distinction */
+                margin-bottom: 20px;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                font-family: Arial, sans-serif;
+                color: #333;
+                background-color: #e0f7fa;
+                border-left: 5px solid #4caf50;
             }
 
-            /* Style for the text inside the strong tag */
             strong {
-                font-size: 18px; /* Slightly larger font size */
-                color: #333; /* Dark text color */
-                font-weight: bold; /* Bold the text */
+                font-size: 18px;
+                color: #333;
+                font-weight: bold;
             }
             .header .left {
-                font-size: 20px; /* Adjust font size for the left side */
-                color: #333; /* Dark color for left text */
+                font-size: 20px;
+                color: #333;
             }
 
             .header .right {
-                font-size: 18px; /* Adjust font size for the right side */
-                color: #4caf50; /* Green color for "predict" */
+                font-size: 18px;
+                color: #4caf50;
             }
 
 
@@ -127,23 +123,20 @@
                 <a href="{{ route('forecast.show', \Illuminate\Support\Carbon::now()->addMonth()->format('F')) }}" class="right">predict</a>
             </div>
             <div class="months">
-                    @foreach($months as $mon)
-                        <a class="month-btn" href="{{route('forecast.shoeExpenses',$mon)}}">{{$mon}}</a>
-                        {{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
-                    @endforeach
-
-                </div>
+                @foreach($months as $mon)
+                    <a class="month-btn" href="{{route('forecast.shoeExpenses',$mon)}}">{{$mon}}</a>
+                @endforeach
+            </div>
             <br>
             <div class="income">
-                <strong>Income: {{  $income_amount }}</strong>
+                <strong>Income: {{$income_amount }}</strong>
             </div>
             <div class="prediction">
-                <strong>Expenses Prediction: {{  $overallPercentageValue }}</strong>
+                <strong>Expenses Prediction: {{$forecastExpenses }}</strong>
             </div>
             <div class="actual">
-                <strong>Actual expenses: {{  $expenses }}</strong>
+                <strong>Actual expenses: {{$expenses }}</strong>
             </div>
-
             <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -154,12 +147,12 @@
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($category as $data)
+                            @foreach($categoryUser as $data)
                                 <tr>
                                     <td>{{$data->name}}</td>
-                                    <td>{{$percentage[$data->id]??0}} %</td>
-                                    <td>Rs     {{$catPer[$data->id]??0}}</td>
-                                    <td>Rs     {{$actualExpenses[$data->id]??0}}</td>
+                                    <td>{{$data->category_percentage ?? 0}} %</td>
+                                    <td>{{$expensesExpectation[$data->id] }}</td>
+                                    <td>{{$data->expenses_sum ?? 0}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

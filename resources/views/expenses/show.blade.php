@@ -13,7 +13,7 @@
         <style>
             .main_div {
                 font-family: Arial, sans-serif;
-                background-color: #f2f2f2;
+                background-color: #f3f4f6;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -24,7 +24,7 @@
                 height: 90vh;
                 margin-top: 30px;
                 background-color: #ffffff;
-                padding: 25px;
+                padding: 100px;
                 border-radius: 8px;
                 width: 100%;
                 max-width: 90%;
@@ -63,7 +63,7 @@
 
             }
             .btn {
-                background-color: #007BFF;
+                background-color: #3260a8;
                 color: white;
                 border: none;
                 padding: 8px 15px;
@@ -92,43 +92,22 @@
     </head>
     <body>
     <div class="main_div">
-        <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            {{--            <div class="header">Budget Allocation List [ <a style="color: #2a7ca6; text-decoration: none" href="{{route('monthlyBudget.create')}}">Add</a> ]</div>--}}
-
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                @foreach($expensesCat as $expenses)
-                    <tr>
-                        <td>{{$expenses->title}}</td>
-                        <td>{{$expenses->description}}</td>
-                        <td>{{$expenses->created_at}}</td>
-                        <td>{{$expenses->amount}}</td>
-                        <td>
-                            <div class="btn-container">
-                                <a href="{{ route('expenses.edit', $expenses->id) }}" class="btn btn-primary">Edit</a>
-                                <form action="{{ route('expenses.destroy', $expenses->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn delete" type="submit">Delete</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-
-
-                </tbody>
-            </table>
+        <div class="child_div_1">
+            @foreach($expensesCat as $expenses)
+                <div style="margin-left: 4rem;margin-right: 20rem; width: 65rem" class="card p-4 shadow-sm">
+                    <h6 class="fw-bold">
+                        {{ $expenses->title }} [<span style="color: #0056b3;">{{ $expenses->category->name }}</span>]
+                        <a href="{{ route('expenses.edit',$expenses->id)}}?start_date={{request('start_date')}}&end_date={{request('end_date')}}" title="Edit">
+                            <i class="fas fa-edit ms-2"></i>
+                        </a>
+                    </h6>
+                    <p class="text-muted">{{\Carbon\Carbon::parse($expenses->created_at)->format('D d M, Y')}}</p>
+                    <p>{{$expenses->description}}</p>
+                </div>
+            @endforeach
+            <div class="container mt-5 d-flex justify-content-center">
+                {{ $expensesCat->appends(['category_id' => request('category_id'), 'start_date' => request('start_date'), 'end_date' => request('end_date')])->links() }}
+            </div>
         </div>
     </div>
 
