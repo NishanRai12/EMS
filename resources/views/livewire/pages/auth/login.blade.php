@@ -18,8 +18,6 @@ new #[Layout('layouts.guest')] class extends Component {
         $this->validate();
 
         $this->form->authenticate();
-
-
         Session::regenerate();
         $user = Auth::user();
         if ($user && $user->isAdmin()) {
@@ -37,8 +35,8 @@ new #[Layout('layouts.guest')] class extends Component {
     <form wire:submit="login">
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')"/>
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email"
+            <x-input-label for="email" :value="__('Email/Username')"/>
+            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" name="email"
                           required autofocus autocomplete="username"/>
             <x-input-error :messages="$errors->get('form.email')" class="mt-2"/>
         </div>

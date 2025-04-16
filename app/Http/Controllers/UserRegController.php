@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IncomeRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\Category;
+use App\Models\Role;
+use App\Models\User;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserRegController extends Controller
 {
@@ -14,7 +19,7 @@ class UserRegController extends Controller
     public function index()
     {
         $category=Category::all();
-        return view('userReg.index',compact('category'));
+        return view('userReg.create',compact('category'));
     }
 
     /**
@@ -28,17 +33,38 @@ class UserRegController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
-    }
+//        $validate = $request->validated();
+//        $user=User::create([
+//            'username' => $validate['username'],
+//            'first_name' => $validate['first_name'],
+//            'last_name' => $validate['last_name'],
+//            'email' => $validate['email'],
+//            'password' => Hash::make($validate['password']),
+//        ]);
+//        $role = Role::where('role_name', 'user')->first();
+//        $user->roles()->attach($role->id);
+//        dd("hi");
 
+        return redirect()->route('userReg.formIncome');
+    }
+    public function incomeFormCreate(IncomeRequest $request){
+//        dd('aabb');
+        return view('userReg.income');
+    }
+    public function incomeFormStore(IncomeRequest $request){
+        return view('userReg.income');
+    }
+//    public function incomeStore(IncomeRequest $request){
+//        dd('hello');
+//    }
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -64,24 +90,4 @@ class UserRegController extends Controller
     {
         //
     }
-
-    public function validate(UserRequest $request){
-        $validate = $request->validated();
-        $username =$validate['username'];
-        $email =$validate['email'];
-        $password =$validate['password'];
-        $firstName =$validate['first_name'];
-        $lastName =$validate['last_name'];
-        session([
-            'user_data' => [
-                'username' => $validate['username'],
-                'email' => $validate['email'],
-                'password' => $validate['password'],
-                'first_name' => $validate['first_name'],
-                'last_name' => $validate['last_name']
-            ]
-        ]);
-        return redirect()->route('income.create');
-    }
-
 }

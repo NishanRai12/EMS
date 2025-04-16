@@ -14,22 +14,31 @@ class Expenses extends Model
         'description',
         'title'
     ];
-    public function user(){
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function category(){
+
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
-    public function budget(){
+
+    public function budget()
+    {
         return $this->belongsTo(MonthlyBudget::class);
     }
 
     // Expense belongs to a Monthly Budget
-    public function monthlyBudget(){
+    public function monthlyBudget()
+    {
 
         return $this->belongsTo(MonthlyBudget::class);
     }
-    public function statements(){
-        return $this->morphMany(Statement::class, 'statementable');
+
+    public function statement()
+    {
+        return $this->morphOne(Statement::class, 'statementable');
     }
 }

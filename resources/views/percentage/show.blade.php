@@ -64,16 +64,22 @@
                         <span>{{ $categories->category->name }} [{{ $categories->percentage ?? 0}}%]</span>
                         <!-- Dropdown Button -->
                         <div class="dropdown">
-                            <button class="btn btn-sm text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa-solid fa-ellipsis-vertical"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ route('percentage.edit', $categories->category->id) }}">Edit</a></li>
                                 <li>
-                                    <form method="POST" action="{{ route('percentage.destroy', $categories->category->id) }}">
+                                    <a class="dropdown-item" href="{{ route('percentage.edit', $categories->category->id) }}">
+                                        Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('percentage.destroy', $categories->category->id) }}" onsubmit="return confirm('Are you sure you want to delete this?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="dropdown-item text-danger" type="submit">Delete</button>
+                                        <button class="dropdown-item text-danger" type="submit">
+                                            Delete
+                                        </button>
                                     </form>
                                 </li>
                             </ul>

@@ -88,7 +88,7 @@ class ForecastController extends Controller
         $currentMon = Carbon::parse($id)->subMonth()->format('n');
         $income = Income::where('user_id', Auth::id())
             ->where('month', $currentMon)
-            ->first();
+            ->sum();
         if($income){
             $user_income = $income->amount;
         }else{
@@ -134,13 +134,11 @@ class ForecastController extends Controller
             'July', 'August', 'September', 'October', 'November', 'December'
         ];
         //getting income
-        $income = Income::where('user_id', Auth::id())
+        $income_amount = Income::where('user_id', Auth::id())
             ->where('month', $currentMon)
-            ->first();
-        if( $income){
-            $income_amount = $income->amount;
-        }else{
-            $income_amount =0;
+            ->sum('amount');
+        if(!$income_amount){
+            $income_amount = 0;
         }
         //percentage of the forecast
         $forecastpercentage = Percentage::where('user_id', Auth::id())->where('month', $currentMon)->where('year',Carbon::now()->year)->sum('percentage');
@@ -170,11 +168,11 @@ class ForecastController extends Controller
         $expensesExpectation = [];
         foreach ($categoryUser as $findPer) {
             $percentage = $findPer->category_percentage ?? 0;
-            $expensesExpectation [$findPer->id] = ($percentage * $income->amount) / 100;
+            $expensesExpectation [$findPer->id] = ($percentage * $income_amount) / 100;
         }
 
         //this is the prediction for expenses
-        return view('forecast.index',compact('currentMonth','months','income_amount','currentMon','income','categoryUser','expenses','forecastExpenses','expensesExpectation'));
+        return view('forecast.index',compact('currentMonth','months','income_amount','currentMon','categoryUser','expenses','forecastExpenses','expensesExpectation'));
     }
     /**
      * Show the form for editing the specified resource.

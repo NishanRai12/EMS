@@ -7,6 +7,7 @@ use App\Http\Requests\SortRequest;
 use App\Models\Category;
 use App\Models\CategoryUser;
 use App\Models\Expenses;
+use App\Models\Income;
 use App\Models\MonthlyBudget;
 use App\Models\User;
 use Carbon\Carbon;
@@ -63,7 +64,8 @@ class ExpensesController extends Controller
     {
         $validated = $request->validated();
         $cat_id = $request->input('category_id');
-        DB::transaction(function () use ( $validated, $cat_id) {
+        $income = Income::where('user_id', Auth::id())->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('amount');
+        DB::transaction(function () use ( $validated, $cat_id, $income) {
             // Create the expense entry
             $expenses= Expenses::create([
                 'title' => $validated['title'],
@@ -74,7 +76,11 @@ class ExpensesController extends Controller
             ]);
             $expenses->created_at = $validated['date'];
             $expenses->save();
-            $expenses->statements()->create([
+            //pivot table
+            $remaining=$income - $validated['amount'];
+            $expenses->statement()->create([
+                'remaining_balance' => $remaining,
+                'user_id' => Auth::user()->id,
                 'amount' => $validated['amount']
             ]);
         });

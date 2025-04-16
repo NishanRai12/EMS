@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('percentages', function (Blueprint $table) {
+        Schema::create('statements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->double('amount');
+            $table->foreignId('user_id')->constrained('users');
+            $table->double('remaining_balance');
+            $table->morphs('statementable');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('percentages');
+        Schema::dropIfExists('statements');
     }
 };

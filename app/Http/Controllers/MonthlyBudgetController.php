@@ -7,6 +7,7 @@ use App\Models\CategoryUser;
 use App\Models\Expenses;
 use App\Models\Income;
 use App\Models\MonthlyBudget;
+use App\Models\Statement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,11 @@ class MonthlyBudgetController extends Controller
     public function index()
     {
         $user = Auth::user();
+//        $findStatements = Statement::with('income')->where('user_id',Auth::id())->orderBy('created_at','desc')->get();
+        $findStatements = Statement::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->limit(6)->get();
+
         $thisYear = Carbon::now()->format('Y');
         $totalExpenses = DB::table('expenses')
             ->select('expenses.user_id',
@@ -37,13 +43,13 @@ class MonthlyBudgetController extends Controller
                 "))
             ->where('user_id',Auth::id())
             ->groupBy('expenses.user_id')->first();
-        $getExpenses = Expenses::orderBy('created_at','DESC')->limit(4)->get();
+        $getExpenses = Expenses::orderBy('created_at','DESC')->limit(9)->get();
        //sum of percentage user forecasted to spend
         $sumOfPercentage = $user->percentages()->where('month',Carbon::now()->month)->sum('percentage');
         $user_income = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
         $forecast = (($sumOfPercentage*$user_income)/100);
 //        $remaining = $forecast-$totalExpenses->monthExpenses;
-        return view('monthlyBudget.index',compact('totalExpenses','forecast','thisYear','getExpenses'));
+        return view('monthlyBudget.index',compact('totalExpenses','forecast','thisYear','getExpenses','findStatements'));
     }
 
     /**

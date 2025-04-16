@@ -15,10 +15,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $user = User::whereHas('roles', function ($query) {
-            $query->where('role_name', 'user');
-        })->get();
-        return view('roles.index',compact('user'));
+        $roles = Role::with('users')->get();
+        return view('roles.index',compact('roles'));
     }
 
     /**
@@ -47,9 +45,11 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show($id)
     {
-        //
+      $roleUser= Role::findOrFail($id);
+      $getAllUser=$roleUser->users()->simplePaginate(5);
+       return view('roles.show',compact('getAllUser','roleUser'));
     }
 
     /**

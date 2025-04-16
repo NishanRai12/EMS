@@ -18,6 +18,7 @@ class FormController extends Controller
 {
     public function finalSubmit(){
         DB::transaction(function () {
+            $incomeSum = Income::where('user_id', Auth::id())->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('amount');
             $form1Data = session( 'user_data');
             $incomeData = session('income_data');
             $oldCatData = session('percentages');
@@ -39,6 +40,8 @@ class FormController extends Controller
                     'user_id'=> $user->id,
                 ]);
                 $income ->statements()->create([
+                    'user_id' => Auth::id(),
+                    'remaining_balance' => $incomeSum + $incomeData['amount'],
                     'amount' => $incomeData['amount']
                 ]);
                 if($oldCatData){
@@ -78,7 +81,9 @@ class FormController extends Controller
                         'user_id'=> $user_id
                     ]);
                     $income ->statements()->create([
-                        'amount' => $incomeData['amount']
+                        'user_id' => Auth::id(),
+                        'amount' => $incomeData['amount'],
+                        'remaining_balance' => $incomeSum + $incomeData['amount']
                     ]);
                 }
                 if($oldCatData){

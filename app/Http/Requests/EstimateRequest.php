@@ -22,8 +22,8 @@ class EstimateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'percentages' => 'array',
-            'percentages.*' => 'required|numeric|min:1|max:100'
+            'percentages' => ['array'],
+            'percentages.*' => ['max:100']
         ];
     }
     public function attributes()

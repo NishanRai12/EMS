@@ -41,15 +41,17 @@ Route::middleware(['access','catRegCheck','auth'])->group(function () {
 });
 
 Route::resource('category_user',CategoryUserController::class);
-Route::post('/validate-user', [UserRegController::class, 'validate'])->name('validate.user');
+//Route::post('/validate-user', [UserRegController::class, 'validate'])->name('validate.user');
 Route::get('/submit-form',[FormController::class, 'finalSubmit'])->name('submit.finalSubmit');
-Route::post('/validate-income', [IncomeController::class, 'validate'])->name('validate.income');
+//Route::post('/validate-income', [IncomeController::class, 'validate'])->name('validate.income');
 Route::post('/validate-cat', [CategoryController::class, 'validate'])->name('validate.cat');
 Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
 Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
 Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
 Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
 Route::resource('income',IncomeController::class);
+Route::resource('user',UserRegController::class);
+Route::get('/Register/income',[UserRegController::class, 'incomeFormCreate'])->name('userReg.formIncome');
 
 
 

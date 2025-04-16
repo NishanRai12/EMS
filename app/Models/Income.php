@@ -17,7 +17,11 @@ class Income extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function statements(){
-        return $this->morphMany(Statement::class, 'statementable');
+//    public function statements(){
+//        return $this->morphMany(Statement::class, 'statementable');
+//    }
+    public function statement()
+    {
+        return $this->morphOne(Statement::class, 'statementable');
     }
 }

@@ -97,7 +97,7 @@
 
 <script>
     function nextPage(){
-        window.location.href = '{{route('submit.finalSubmit')}}';
+        window.location.href = '{{route('submit.finalSubmit')}}'
     }
 
     // Convert existing categories to lowercase for case-insensitive comparison

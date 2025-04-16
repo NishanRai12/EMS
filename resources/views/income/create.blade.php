@@ -1,3 +1,4 @@
+<x-app-layout>
 <!doctype html>
 <html lang="en">
 <head>
@@ -19,10 +20,9 @@
             margin: 0;
             height: 100vh;
         }
-
         .child_div_1 {
             background-color: #ffffff;
-            padding: 25px;
+            padding: 5rem 25px;
             border-radius: 8px;
             max-width: 800px;
             height: 32rem;
@@ -30,7 +30,7 @@
 
         button {
             margin-top: 15px;
-            padding: 8px;
+            padding: 8px ;
             width: 6rem;
             font-size: 16px;
             cursor: pointer;
@@ -44,16 +44,12 @@
             background-color: gray;
             cursor: not-allowed;
         }
-
         .form_input {
             width: 300px;
         }
-
-        input {
+        input{
             height: 36px;
-            width: 607px;
         }
-
         h1 {
             font-family: 'Arial', sans-serif;
             color: #3260a8;
@@ -66,47 +62,24 @@
 <body>
 <div class="main_div">
     <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-        <h1>ESTIMATE PERCENTAGE</h1>
-        {{--        @if(session('error'))--}}
-        {{--            <script>alert('Percentage cannot be greater than 100%')</script>--}}
-        {{--        @endif--}}
-        {{--        @if(session('null'))--}}
-        {{--            <script>alert('Percentage cannot be null')</script>--}}
-        {{--        @endif--}}
-        {{--        @if(session('catNull'))--}}
-        {{--            <script>alert('Category cannot be null')</script>--}}
-        {{--        @endif--}}
-        <form action="{{route('category.storeFormSession')}}" method="POST">
-            @csrf
-            @foreach($category as $categoriesData)
-                <div class="form-check">
-                    <div>
-                        <input type="hidden" name="categories[]" value="{{ $categoriesData->id }}" class="form-check-input">
-                        <label class="form-check-label" for="category_{{ $categoriesData->id }}">
-                            {{ $categoriesData->name }}
-                        </label>
-                    </div>
-                    <div>
-                        <input type="number" name="percentages[{{ $categoriesData->id }}]" placeholder="%" min="0"
-                               max="100">
-                        @error("percentages.{$categoriesData->id}")
-                        <p class="text text-danger"> {{$message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-
-                <br>
-            @endforeach
-            @error('percentages')
-            <div class="alert alert-danger"> {{$message }}</div>
-            @enderror
-            <div style="display: flex; justify-content: end;">
-                {{ $category->links() }}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
             </div>
+        @endif
+        <h1>INCOME</h1>
+        <form action="{{route('income.store')}} " method="POST">
+            @csrf
+            <div class="mb-1">
+                <label for="amount" class="label_input">Amount</label> <br>
+                <input type="number" style="width: 607px" class="form_input" name="amount" id="amount">
+            </div>
+            @error('amount')
+            <div style="color: red">{{ $message }}</div>
+            @enderror
             <button type="submit">Submit</button>
+            <button type="reset">Reset</button>
         </form>
-
     </div>
 </div>
 <!-- Bootstrap JS -->
@@ -114,11 +87,7 @@
 
 </body>
 </html>
-<script>
-    function validateIform() {
-        document.getElementById('validateIform').submit();
-    }
-</script>
+</x-app-layout>
 
 
 

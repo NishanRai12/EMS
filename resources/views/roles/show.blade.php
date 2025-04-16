@@ -77,29 +77,30 @@
 
     <div class="main_div">
         <div class="child_div_1">
-            <div class="header">Roles <a href="{{route('role.create')}}"><i class="fa-solid fa-square-plus"></i></a>
-            </div>
+            <div class="header">{{ strtoupper($roleUser->role_name)}} </div>
             <div class="card-body">
                 <table class="table table-bordered">
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Name</th>
-                        <th>Count</th>
-                        <th>Action</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Joined</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($roles as $roleUser)
+                    @foreach($getAllUser as $user)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $roleUser->role_name }}</td>
-                            <td>{{ $roleUser->users->count() }}</td>
-                            <td><a href="{{route('role.show',$roleUser->id)}}"><i style="color: #0056b3" class="fa-solid fa-eye"></i></a></td>
+                            <td>{{ $user->username}}</td>
+                            <td>{{ $user->email}}</td>
+                            <td>{{ $user->first_name}}</td>
+                            <td>{{ $user->last_name}}</td>
+                            <td>{{ $user->created_at->todateString()}}</td>
                         </tr>
                     @endforeach
-
-
                     </tbody>
                 </table>
             </div>
