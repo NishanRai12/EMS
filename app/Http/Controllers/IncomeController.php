@@ -35,7 +35,7 @@ class IncomeController extends Controller
     }
     public function FormCreate()
     {
-        return view('userReg.newIncome');
+        return view('registration.newIncome');
     }
 
 
@@ -130,30 +130,4 @@ class IncomeController extends Controller
         $income->delete();
         return redirect()->route('income.show',Auth::id());
     }
-    public function validate (IncomeRequest $request)
-    {
-        $month = Carbon::now()->format('n');
-        $validatedData = $request->validated();
-        session([
-        'income_data' => [
-        'amount'      => $validatedData['amount'],
-        'month'       => $month
-        ]
-        ]);
-//        $user = Auth::user();
-//        $month = Carbon::now()->format('n');
-//        $does_exist=$user->Categories()->where('month', $month)->exists();
-//        if($does_exist){
-//            Income::create([
-//                'user_id'=>Auth::id(),
-//                'amount'      => $validatedData['amount'],
-//                'month'       => $month,
-//            ]);
-//            return redirect()->route('monthlyBudget.index');
-//        }else {
-//            return redirect()->route('category.newFormCat');
-            return redirect()->route('category.showFormCat');
-
-    }
-
 }

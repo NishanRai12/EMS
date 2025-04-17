@@ -79,7 +79,7 @@ class User extends Authenticatable
     }
     public function isAdmin(): bool
     {
-        return $this->roles()->where('role_name', 'admin')->exists(); // Check if the user has 'admin' role
+        return $this->roles()->where('role_name', 'admin')->exists();
     }
 }
 

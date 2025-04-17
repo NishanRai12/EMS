@@ -67,7 +67,7 @@
     <div class="container mt-5">
         <div class="row">
             <!-- Total Users -->
-            <a href="{{ route('admin.users') }}" class="col-md-4 text-decoration-none">
+            <a href="{{ route('admin.displayALLusers') }}" class="col-md-4 text-decoration-none">
                 <div class="dashboard-box">
                     <i style="color: #007BFF" class="fas fa-users icon"></i>
                     <p style="font-size: 15px ; color: black">Total Users</p>
@@ -75,7 +75,7 @@
                 </div>
             </a>
             <!-- Total Categories -->
-            <a href="{{ route('category.index') }}" class="col-md-4 text-decoration-none">
+            <a href="{{ route('admin.displayALLCategories') }}" class="col-md-4 text-decoration-none">
                 <div class="dashboard-box">
                     <i style="color: #007BFF"  class="fas fa-th-list icon"></i>
                     <p style="font-size: 15px ; color: black">Total Categories</p>

@@ -25,14 +25,12 @@ class DataExistance
         $currYear = Carbon::now()->format('Y');
         $findPer = Percentage::where('user_id', Auth::id())->where('month', $currMonth)->where('year', $currYear)->exists();
         $income = Income::where('user_id', Auth::user()->id)->where('month', $currMonth)->exists();
-        if(Auth::user()->role=="admin"){
+
+        if(Auth::user()->isAdmin()){
             return $next($request);
         }else{
             if(!$income){
                 return to_route('income.create');
-            }
-            if (!$findPer) {
-                return to_route('category.showFormCat');
             }
             else{
                 return $next($request);

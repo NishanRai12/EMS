@@ -19,18 +19,16 @@
             margin: 0;
             height: 100vh;
         }
-
         .child_div_1 {
             background-color: #ffffff;
             padding: 25px;
             border-radius: 8px;
             max-width: 800px;
+            width: 44rem;
             height: 32rem;
         }
-
         button {
-            margin-top: 15px;
-            padding: 8px;
+            padding: 6px;
             width: 6rem;
             font-size: 16px;
             cursor: pointer;
@@ -51,13 +49,15 @@
 
         input {
             height: 36px;
-            width: 607px;
+            width: 500px;
         }
 
         h1 {
             font-family: 'Arial', sans-serif;
             color: #3260a8;
-            font-size: 3rem;
+            font-size: 25px;
+            margin-bottom: 20px;
+            margin-left: 15px;
             font-weight: bold;
         }
 
@@ -66,47 +66,44 @@
 <body>
 <div class="main_div">
     <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-        <h1>ESTIMATE PERCENTAGE</h1>
-        {{--        @if(session('error'))--}}
-        {{--            <script>alert('Percentage cannot be greater than 100%')</script>--}}
-        {{--        @endif--}}
-        {{--        @if(session('null'))--}}
-        {{--            <script>alert('Percentage cannot be null')</script>--}}
-        {{--        @endif--}}
-        {{--        @if(session('catNull'))--}}
-        {{--            <script>alert('Category cannot be null')</script>--}}
-        {{--        @endif--}}
-        <form action="{{route('category.storeFormSession')}}" method="POST">
+        <h1>CHOOSE CATEGORIES FOR YOUR EXPENSES</h1>
+        @error('categories')
+        <div class="alert alert-danger" role="alert">
+            {{$message}}
+        </div>
+        @enderror
+        @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+        @error('cat_name')
+        <div class="alert alert-danger" role="alert">{{$message}}</div>
+        @enderror
+        <form action="{{ route('register.storeNewCategory') }}" method="POST">
             @csrf
-            @foreach($category as $categoriesData)
-                <div class="form-check">
-                    <div>
-                        <input type="hidden" name="categories[]" value="{{ $categoriesData->id }}" class="form-check-input">
+            <div style="display: flex; flex-direction: row; gap: 4px;">
+                <input name="cat_name" placeholder="Enter New category" required>
+                <button type="submit" class="button">Add</button>
+            </div>
+        </form>
+        <div class="form-check" style="display: flex; justify-content: center;">
+            <form action="{{ route('registration.storeCategoryRegistration') }}" method="POST"
+                  style="display: flex; flex-wrap: wrap; gap: 1rem; width: 100%;">
+                @csrf
+                @foreach($category as $categoriesData)
+                    <div style="flex: 1 1 calc(25% - 1rem); display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" name="categories[]" value="{{ $categoriesData->id }}" id="category_{{ $categoriesData->id }}" class="form-check-input">
                         <label class="form-check-label" for="category_{{ $categoriesData->id }}">
                             {{ $categoriesData->name }}
                         </label>
                     </div>
-                    <div>
-                        <input type="number" name="percentages[{{ $categoriesData->id }}]" placeholder="%" min="0"
-                               max="100">
-                        @error("percentages.{$categoriesData->id}")
-                        <p class="text text-danger"> {{$message }}</p>
-                        @enderror
-                    </div>
+                @endforeach
+                <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 1rem;">
+                    <button type="submit">Submit</button>
                 </div>
-
-
-                <br>
-            @endforeach
-            @error('percentages')
-            <div class="alert alert-danger"> {{$message }}</div>
-            @enderror
-            <div style="display: flex; justify-content: end;">
-                {{ $category->links() }}
-            </div>
-            <button type="submit">Submit</button>
-        </form>
-
+            </form>
+        </div>
     </div>
 </div>
 <!-- Bootstrap JS -->

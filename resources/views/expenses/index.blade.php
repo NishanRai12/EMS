@@ -56,6 +56,16 @@
                         @else
                             <div class="header">EXPENSES FROM {{$start_date}} TO {{$end_date}}</div>
                         @endif
+                            @error('start_date')
+                            <div class="alert alert-danger" role="alert">
+                                <span>{{$message}}</span>
+                            </div>
+                            @enderror
+                            @error('end_date')
+                            <div class="alert alert-danger" role="alert">
+                                <span>{{$message}}</span>
+                            </div>
+                            @enderror
                         <form action="{{route('expenses.index')}}" method="GET">
                             @csrf
                             <div class="input-group">

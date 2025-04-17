@@ -18,16 +18,15 @@ class AccessMiddleware
     {
         $user = Auth::user();
         $role = $user->getRole();
-        if (!$role->isAdmin()) {
+        if (Auth::user()->isAdmin()) {
+            return $next($request);
+        }else{
             $permissionCheck = $role->hasPermission($request->route()->getName());
             if ($permissionCheck) {
                 return $next($request);
             }else{
                 abort(401);
             }
-
-        }else{
-            return $next($request);
         }
     }
 }

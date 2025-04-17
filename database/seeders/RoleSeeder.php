@@ -15,14 +15,10 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $adminRole=Role::Create([
-            'name' => 'admin'
+            'role_name' => 'admin'
         ]);
         $userRole=Role::Create([
-            'name' => 'user'
+            'role_name' => 'user'
         ]);
-        $get_admin = User::where('email', 'karnn@gmail.com')->first();
-        $get_admin->roles()->attach($adminRole);
-        $get_user= User::where('email', 'nishan@gmail.com')->first();
-        $get_user->roles()->attach($userRole);
     }
 }

@@ -20,7 +20,6 @@
                 margin: 0;
                 height: 100vh;
             }
-
             .child_div_1 {
                 background-color: #ffffff;
                 padding: 25px;
@@ -28,108 +27,101 @@
                 width: 100%;
                 max-width: 800px;
             }
+            .header {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                margin-top: 10px;
+                background: #e8eaf6;
+                padding: 10px;
+                border-radius: 4px;
+                text-align: center;
+            }
+            .submit_category {
+                font-size: 16px;
+                margin-bottom: 10px;
+                margin-top: 10px;
+                background: #3260a8;
+                padding: 6px 25px;
+                border-radius: 4px;
+                text-align: center;
+                color: white;
+                text-decoration: none;
+            }
         </style>
     </head>
     <body>
     <div class="main_div">
         <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-                Add Categories
-            </button>
-
-            <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height:50%; width: 100%;">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasTopLabel">Add Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <a class="submit_category" href="{{route('category.create')}}">Add Categories</a>
+            <div class="first_div">
+                <div class="header">
+                    CHOOSE CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
                 </div>
-                <div class="offcanvas-body">
-                    <form action="{{ route('category.store') }}" method="POST" id="tagForm">
-                        @csrf
-                        <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
-                        <div class="mb-3">
-                            <label for="cat_name" class="form-label">Category</label>
-                            <input type="text" class="form-control" name="cat_name" value="{{ old('cat_name') }}">
-                        </div>
-                        @error('cat_name')
-                        <div style="color: red;">{{ $message }}</div>
-                        @enderror
-                        <button type="submit" class="btn btn-success">Save</button>
-                    </form>
-                </div>
+                <form method="POST" action={{route('category_user.store')}}>
+                    @csrf
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($fetch_adminCat as $displayData)
+                            <tr>
+                                <td>{{ $displayData->name }}</td>
+                                @if($displayData->deleted_at == "")
+                                    <td style=" color:green">Enabled</td>
+                                @else
+                                    <td style="color:red;">Disabled</td>
+                                @endif
+                                <td><input name ="selectData[]" value="{{$displayData->id}}" type="checkbox"></td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    <button class="submit_category" type="submit">Submit</button>
+                    <br>
+                    @error('selectData')
+                    <div style="color: red ">{{$message}}</div>
+                    @enderror
+                </form>
+                {{$fetch_adminCat->links()}}
             </div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Owner</th>
-                    <th scope="col">Users</th>
-
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($categories as $displayData)
+            <div class="second_div">
+                <div class="header">
+                    CHOOSED CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
+                </div>
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td>{{ $displayData->name }}</td>
-                        <td>{{ $displayData->created_at }}</td>
-                        <td>{{ $displayData->user->fullname() }}</td>
-                        <td>{{ $displayData->users_count??0}}</td>
-
-                        <td>
-                            <div class="dropdown-center" style="display: flex; justify-content: end; ">
-                                <button style="background-color: white ; border: none;color : black ; place-content: center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
-                                </button>
-
-                                    <ul class="dropdown-menu">
-                                        @if($displayData->deleted_at == "")
-                                            <form method= "POST" action="{{route('category.destroy',$displayData->id)}}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="dropdown-item" type="Submit"> Delete</button>
-                                            </form>
-                                        @else
-                                            <form method= "POST" action="{{route('category.restore',$displayData->id)}}">
-                                                @csrf
-                                                <button class="dropdown-item" type="Submit"> Restore</button>
-                                            </form>
-                                        @endif
-                                    </ul>
-                            </div>
-                        </td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Status</th>
+                        <th></th>
                     </tr>
-                @endforeach
-
-                </tbody>
-            </table>
-{{--            {{$categories->links()}}--}}
-
+                    </thead>
+                    <tbody>
+                    @foreach($user_cat as $displayData)
+                        <tr>
+                            <td>{{ $displayData->name ??''}}</td>
+                            @if($displayData->deleted_at == "")
+                                <td style=" color:green">Enabled</td>
+                            @else
+                                <td style="color:red;">Disabled</td>
+                            @endif
+                            <td><a href="{{ route('category.removeUse',$displayData->id) }}" >Remove</a> </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+                {{$user_cat->links()}}
+            </div>
         </div>
     </div>
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var myOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasTop'));
-
-            // Keep offcanvas open if there are validation errors
-            @if($errors->any())
-                window.onload = function () {
-                myOffcanvas.show();
-            };
-            @endif
-
-            document.getElementById('tagForm').addEventListener('submit', function (event) {
-                const errorMessage = document.querySelector('.text-danger');
-                if (errorMessage) {
-                    event.preventDefault();
-                    myOffcanvas.show();  // Prevents closing when there are errors
-                }
-            });
-        });
-    </script>
 
     </body>
     </html>

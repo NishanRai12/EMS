@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ExpensesRequest;
+use App\Http\Requests\FilterDateRequest;
 use App\Http\Requests\SortRequest;
 use App\Models\Category;
 use App\Models\CategoryUser;
@@ -20,12 +21,13 @@ class ExpensesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(FilterDateRequest $request)
     {
-        $start_date = $request->get('start_date');
+        $validated = $request->validated();
+        $start_date = $validated['start_date'];
         $month = Carbon::parse($start_date)->format('n');
         $year = Carbon::parse($start_date)->format('Y');
-        $end_date = $request->get('end_date');
+        $end_date =  $validated['end_date'];
         $parsed_start_date = Carbon::parse($start_date)->startOfDay();
         $parsed_end_date = Carbon::parse($end_date)->endOfDay();
         $categories = Category::whereHas('users', function ($query) {

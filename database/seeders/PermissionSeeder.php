@@ -32,7 +32,7 @@ class PermissionSeeder extends Seeder
             'verify-email/{id}/{hash}',
             'storage/{path}',
             'up',
-            'userReg',
+            'registration',
             '/validate-user',
             '/submit-form',
             '/validate-income',

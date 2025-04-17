@@ -63,7 +63,7 @@
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <h1>REGISTRATION</h1>
-            <form action="{{route('user.store')}}" method="POST" id="validateRform">
+            <form action="{{route('registration.store')}}" method="POST" id="validateRform">
                 @csrf
                 <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
                 <div style="display: flex; flex-direction: row; gap:5px">

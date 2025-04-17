@@ -20,7 +20,6 @@
                 margin: 0;
                 height: 100vh;
             }
-
             .child_div_1 {
                 background-color: #ffffff;
                 padding: 25px;

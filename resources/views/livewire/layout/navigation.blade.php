@@ -24,7 +24,7 @@ new class extends Component
                 <!-- Logo -->
                 @if(\Illuminate\Support\Facades\Auth::user()->isAdmin())
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')" wire:navigate>
+                        <x-nav-link :href="route('admin.dashbord')" :active="request()->routeIs('admin.dashbord')" wire:navigate>
                             {{ __('Dashboard') }}
                         </x-nav-link>
                     </div>
@@ -34,7 +34,7 @@ new class extends Component
                         </x-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.permission')" :active="request()->routeIs('admin.permission')" wire:navigate>
+                        <x-nav-link :href="route('admin.displayaLLpermission')" :active="request()->routeIs('admin.displayaLLpermission')" wire:navigate>
                             {{ __('Permission') }}
                         </x-nav-link>
                     </div>
@@ -59,7 +59,7 @@ new class extends Component
                     </div>
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('category.show',Auth::user()->id)" :active="request()->routeIs('category.show')" wire:navigate>
+                        <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index')" wire:navigate>
                             {{ __('Category') }}
                         </x-nav-link>
                     </div>

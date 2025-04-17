@@ -62,7 +62,7 @@
 <div class="main_div">
     <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
         <h1>INCOME</h1>
-        <form action="{{route('validate.income')}} " method ="POST">
+        <form action="{{route('registration.storeIncomeRegistration')}} " method ="POST">
             @csrf
             <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
             <div class="mb-1">

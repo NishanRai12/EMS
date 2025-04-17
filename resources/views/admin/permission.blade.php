@@ -68,14 +68,14 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $permission->name }}</td>
                                         <td>
-                                            @if($permission->roles()->exists()) <!-- Check if no roles are associated (pivot table empty) -->
-                                            <form method="POST" action="{{ route('admin.destroy', $permission->id) }}">
+                                            @if($permission->roles()->exists())
+                                            <form method="POST" action="{{ route('admin.destroyPermission', $permission->id) }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <x-primary-button class="mt-4">Delete</x-primary-button>
                                             </form>
                                             @else
-                                                <form method="POST" action="{{ route('admin.store', $permission->id) }}">
+                                                <form method="POST" action="{{ route('admin.createPermission', $permission->id) }}">
                                                     @csrf
                                                     <x-primary-button class="mt-4" name="permission" value="{{ $permission->id }}">Update</x-primary-button>
                                                 </form>

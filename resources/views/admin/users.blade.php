@@ -51,7 +51,6 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -61,11 +60,6 @@
                         <td>{{$userData->first_name}}</td>
                         <td>{{$userData->last_name}}</td>
                         <td>{{$userData->email}}</td>
-{{--                        <td> <a href="{{route('admin.show',$userData->id)}}">Categories</a></td>--}}
-                        <td>
-                            <a href="{{ route('admin.show', ['month' => \Carbon\Carbon::now()->format('F'), 'user_id' => $userData->id]) }}">Categories</a>
-                        </td>
-
                     </tr>
                 @endforeach
                 </tbody>
