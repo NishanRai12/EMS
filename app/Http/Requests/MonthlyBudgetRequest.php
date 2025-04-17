@@ -33,4 +33,10 @@ class MonthlyBudgetRequest extends FormRequest
             ],
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'month.between' => 'The month must be between 1 (January) and 12 (December).',
+        ];
+    }
 }

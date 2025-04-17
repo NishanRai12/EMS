@@ -77,16 +77,6 @@
                 text-decoration: none;
                 display: block;
             }
-            .btn:hover {
-                background-color: #0056b3;
-            }
-            /* Delete button specific styling */
-            .btn.delete {
-                background-color: #dc3545;
-            }
-            .btn.delete:hover {
-                background-color: #c82333;
-            }
 
         </style>
     </head>
@@ -101,7 +91,7 @@
                             <i class="fas fa-edit ms-2"></i>
                         </a>
                     </h6>
-                    <p class="text-muted">{{\Carbon\Carbon::parse($expenses->created_at)->format('D d M, Y')}}</p>
+                    <p class="text-muted">{{\Carbon\Carbon::parse($expenses->expenses_date)->format('D d M, Y')}}</p>
                     <p>{{$expenses->description}}</p>
                 </div>
             @endforeach

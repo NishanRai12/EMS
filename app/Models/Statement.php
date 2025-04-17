@@ -10,7 +10,7 @@ class Statement extends Model
     protected $fillable = [
         'user_id',
         'amount',
-        'remaining_balance',
+        'statement_date',
         'statementable_id',
         'statementable_type',
     ];

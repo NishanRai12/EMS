@@ -182,7 +182,7 @@
                     <h1 style="font-size: 15px; font-weight: bold; margin-left: 15px"><i class="fa-solid fa-money-bill" style="margin-right: 13px"></i>{{ $recentExpenses->title }}</h1>
                     <h2 style="font-size: 15px; color: red; font-weight: bold; margin: 0;">Rs.{{ $recentExpenses->amount }}</h2>
                 </div>
-                <p style="margin-left: 32px;font-size: 13px">{{\Carbon\Carbon::parse($recentExpenses->created_at)->format('D d M, Y')}}</p>
+                <p style="margin-left: 32px;font-size: 13px">{{\Carbon\Carbon::parse($recentExpenses->expenses_date)->format('D d M, Y')}}</p>
                 <hr style="border: 1px solid #b3afaf; margin: 2px 0;">
             @endforeach
             <div>
@@ -193,42 +193,6 @@
             </div>
         </div>
     </div>
-{{--    <div class="child_div_1 d-flex justify-content-between align-items-center">--}}
-{{--        <h6 class="header2"> <i class="fa-solid fa-calendar-week" style="margin-right: 10px;font-size: 20px; margin-bottom: 12px" ></i>STATEMENTS</h6>--}}
-{{--        <table class="table table-bordered">--}}
-{{--            <thead>--}}
-{{--            <tr>--}}
-{{--                <th>Posting Date</th>--}}
-{{--                <th>Type</th>--}}
-{{--                <th>Amount</th>--}}
-{{--                <th>Remaining</th>--}}
-
-{{--            </tr>--}}
-{{--            </thead>--}}
-{{--            <tbody>--}}
-{{--            @foreach($findStatements as $statementData)--}}
-{{--                <tr>--}}
-{{--                    <td>{{$statementData->created_at->todateString()}}</td>--}}
-{{--                    <td>--}}
-{{--                        @if($statementData->statementable_type == "App\Models\Expenses")--}}
-{{--                            Expenses--}}
-{{--                        @else--}}
-{{--                            Income--}}
-{{--                        @endif--}}
-{{--                    </td>--}}
-{{--                    <td>--}}
-{{--                        @if($statementData->statementable_type == "App\Models\Expenses")--}}
-{{--                            <span style="color: red;font-weight: bold"> Rs. -{{$statementData->amount}}</span>--}}
-{{--                        @else--}}
-{{--                            <span style="color: green; font-weight: bold">Rs. {{$statementData->amount}}</span>--}}
-{{--                        @endif--}}
-{{--                    </td>--}}
-{{--                    <td>{{$statementData->remaining_balance}}</td>--}}
-{{--                </tr>--}}
-{{--            @endforeach--}}
-{{--            </tbody>--}}
-{{--        </table>--}}
-{{--    </div>--}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
     </html>

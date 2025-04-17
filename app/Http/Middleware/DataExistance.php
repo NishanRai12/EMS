@@ -24,7 +24,7 @@ class DataExistance
         $currMonth = Carbon::now()->format('n');
         $currYear = Carbon::now()->format('Y');
         $findPer = Percentage::where('user_id', Auth::id())->where('month', $currMonth)->where('year', $currYear)->exists();
-        $income = Income::where('user_id', Auth::user()->id)->where('month', $currMonth)->exists();
+        $income = Income::where('user_id', Auth::id())->whereMonth('income_date',  Carbon::now()->format('n'))->exists();
 
         if(Auth::user()->isAdmin()){
             return $next($request);

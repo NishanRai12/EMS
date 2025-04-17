@@ -60,13 +60,18 @@ class RegistrationController extends Controller
         return view('registration.incomeForm');
     }
     public function storeIncomeRegistration(IncomeRequest $request){
-        $month = Carbon::now()->format('n');
         $validatedData = $request->validated();
-//        Income::create([
-//            'amount'      => $validatedData['amount'],
-//            'month'       => $month,
-//            'user_id' => Auth::id()
-//        ]);
+       $income =Income::create([
+            'amount'      => $validatedData['amount'],
+            'income_date' => Carbon::now()->toDateString(),
+            'user_id' => Auth::id()
+        ]);
+       $income->statement()->create([
+           'amount' => $validatedData['amount'],
+           'statement_date' => Carbon::now()->toDateString(),
+           'user_id' => Auth::id()
+       ]);
+
         return redirect()->route('registration.categoryRegistration');
     }
     public function showCategoryRegistration()

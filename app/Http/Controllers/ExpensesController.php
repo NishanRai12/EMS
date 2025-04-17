@@ -24,75 +24,84 @@ class ExpensesController extends Controller
     public function index(FilterDateRequest $request)
     {
         $validated = $request->validated();
+        //validate the date
         $start_date = $validated['start_date'];
-        $month = Carbon::parse($start_date)->format('n');
-        $year = Carbon::parse($start_date)->format('Y');
-        $end_date =  $validated['end_date'];
+        $end_date = $validated['end_date'];
+        //convert to the start of the day
         $parsed_start_date = Carbon::parse($start_date)->startOfDay();
         $parsed_end_date = Carbon::parse($end_date)->endOfDay();
+
         $categories = Category::whereHas('users', function ($query) {
             $query->where('user_id', Auth::id());
         })->orwhereHas('expenses',
-                function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                $subQuery->whereBetween('created_at', [$parsed_start_date, $parsed_end_date]);
-        })->withSum(['expenses as expenses_sum' =>
-                function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                $subQuery->whereBetween('created_at', [$parsed_start_date, $parsed_end_date]);
-            }],'amount')
+            function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
+                $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+            })->withSum(['expenses as expenses_sum' =>
+            function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
+                $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+            }], 'amount')
             ->withCount(['expenses as expense_count' =>
                 function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                $subQuery->whereBetween('created_at', [$parsed_start_date, $parsed_end_date]);
-            }],'amount')->simplePaginate(4);
+                    $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+                }], 'amount')->simplePaginate(4);
 
         return view('expenses.index', compact('categories', 'start_date', 'end_date'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
     {
-        $store_date=$request->start_date;
+        $store_date = $request->start_date;
         $categoryId = $request->category_id;
-        $getUserChhosedCategory= Category::whereHas('users', function ($query) {
+        $categories = Category::findOrFail($categoryId);
+        $searchUserCategories = Auth::user()->categories()->where('category_id', $categoryId)
+            ->where('month',Carbon::now()->month)
+            ->where('year',Carbon::now()->year)->firstorFail();
+        $getUserChhosedCategory = Category::whereHas('users', function ($query) {
             $query->where('user_id', Auth::id())
                 ->where('month', Carbon::now()->month)
                 ->where('year', Carbon::now()->year);
         })->get();
-        $category = Category::where('id',$categoryId)->first();
-        return view('expenses.create',compact('category', 'store_date','getUserChhosedCategory','categoryId'));
+        $category = Category::where('id', $categoryId)->first();
+        return view('expenses.create', compact('category', 'store_date', 'getUserChhosedCategory', 'categoryId'));
     }
+
     //store the expeses
     public function store(ExpensesRequest $request)
     {
         $validated = $request->validated();
         $cat_id = $request->input('category_id');
         $income = Income::where('user_id', Auth::id())->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('amount');
-        DB::transaction(function () use ( $validated, $cat_id, $income) {
+        DB::transaction(function () use ($validated, $cat_id, $income) {
             // Create the expense entry
-            $expenses= Expenses::create([
+            $expenses = Expenses::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'category_id' => $cat_id,
+                'expenses_date' => $validated['date'],
                 'user_id' => Auth::id(),
                 'amount' => $validated['amount'],
             ]);
-            $expenses->created_at = $validated['date'];
-            $expenses->save();
             //pivot table
-            $remaining=$income - $validated['amount'];
+            $remaining = $income - $validated['amount'];
             $expenses->statement()->create([
                 'remaining_balance' => $remaining,
+                'statement_date' => Carbon::now()->toDateString(),
                 'user_id' => Auth::user()->id,
                 'amount' => $validated['amount']
             ]);
         });
-        return back()->with('success','Expense created successfully');
+        return back()->with('success', 'Expense created successfully');
     }
-    function search(Request $request){
+
+    function search(Request $request)
+    {
         $keyword = $request->get('search_data');
         $expensesCat = DB::table('expenses')
             ->join('categories', 'expenses.category_id', '=', 'categories.id')
-            ->select('expenses.id','expenses.title',
+            ->select('expenses.id', 'expenses.title',
                 'expenses.description',
                 'expenses.amount',
                 'expenses.created_at',
@@ -104,16 +113,17 @@ class ExpensesController extends Controller
                     ->orWhere('expenses.description', 'LIKE', "%{$keyword}%")
                     ->orWhere('categories.name', 'LIKE', "%{$keyword}%");
             })->get();
-        return view('expenses.search',compact('expensesCat'));
+        return view('expenses.search', compact('expensesCat'));
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function sortExpenses(SortRequest $request)
     {
-        $validated  = $request->validated();
+        $validated = $request->validated();
         $start_date = $validated['start_date'];
-        $end_date =$validated['end_date'];
+        $end_date = $validated['end_date'];
         $parsed_start_date = Carbon::parse($start_date)->startOfDay();
         $parsed_end_date = Carbon::parse($end_date)->endOfDay();
         $categories = Category::whereHas('users', function ($query) {
@@ -124,41 +134,45 @@ class ExpensesController extends Controller
             })->withSum(['expenses as expenses_sum' =>
             function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
                 $subQuery->whereBetween('created_at', [$parsed_start_date, $parsed_end_date]);
-            }],'amount')
+            }], 'amount')
             ->withCount(['expenses as expense_count' =>
                 function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
                     $subQuery->whereBetween('created_at', [$parsed_start_date, $parsed_end_date]);
-                }],'amount')->simplePaginate(4);
+                }], 'amount')->simplePaginate(4);
         return view('expenses.index', compact('categories', 'start_date', 'end_date'));
 
     }
+
     //display all expenses
-    public function show(Request $request)
+    public function show(FilterDateRequest $request)
     {
         $user = Auth::user();
-        //check if the category exists or not
-        $categoryId= Category::findOrFail($request->get('category_id'));
+
         //check if the category can be accessed by the user or not
+        $categoryId = Category::findOrFail($request->get('category_id'));
         $cat_access = $user->categories()->where('category_id', $categoryId->id)->firstOrfail();
-        $start_date = $request->get('start_date');
-        $end_date = $request->get('end_date');
+        $validated = $request->validated();
+        $start_date = $validated['start_date'];
+        $end_date = $validated['end_date'];
+        //check if the category exists or not
         $parsed_start_date = Carbon::parse($start_date)->startOfDay();
         $parsed_end_date = Carbon::parse($end_date)->endOfDay();
-        $expensesCat = Expenses::where('category_id', $request->get('category_id'))->whereBetween('created_at', [$parsed_start_date, $parsed_end_date])->simplePaginate(10);
+        $expensesCat = Expenses::where('category_id', $request->get('category_id'))->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date])->simplePaginate(10);
         return view('expenses.show', compact('expensesCat'));
     }
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        $expenses = Expenses::where('id',$id)->firstOrFail();
-        $getUserChhosedCategory= Category::whereHas('users', function ($query) {
+        $expenses = Expenses::where('id', $id)->firstOrFail();
+        $getUserChhosedCategory = Category::whereHas('users', function ($query) {
             $query->where('user_id', Auth::id())
                 ->where('month', Carbon::now()->month)
                 ->where('year', Carbon::now()->year);
         })->get();
-        return view('expenses.edit',compact('expenses','getUserChhosedCategory','id'));
+        return view('expenses.edit', compact('expenses', 'getUserChhosedCategory', 'id'));
     }
 
     /**
@@ -167,15 +181,15 @@ class ExpensesController extends Controller
     public function update(ExpensesRequest $request, string $id)
     {
         DB::transaction(function () use ($request, $id) {
-            $validate=$request->validated();
-            $expenses = Expenses::where('id',$id)->firstorFail();
+            $validate = $request->validated();
+            $expenses = Expenses::where('id', $id)->firstorFail();
             $expenses->update([
-                'title'=> $validate['title'],
-                'description'=> $validate['description'],
-                'amount'=> $validate['amount']
+                'title' => $validate['title'],
+                'description' => $validate['description'],
+                'amount' => $validate['amount']
             ]);
         });
-        return redirect()->back()->with('success','Updated Successfully');
+        return redirect()->back()->with('success', 'Updated Successfully');
     }
 
     /**

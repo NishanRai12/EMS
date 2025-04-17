@@ -16,7 +16,7 @@ class UserPermissionSeeder extends Seeder
     {
         $timestamp = Carbon::now();
 
-        $adminPermissions = range(1, 95);
+        $adminPermissions = range(1, 91);
 
         foreach ($adminPermissions as $permissionId) {
             DB::table('permission_role')->updateOrInsert(

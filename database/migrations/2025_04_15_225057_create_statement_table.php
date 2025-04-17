@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('statements', function (Blueprint $table) {
             $table->id();
             $table->double('amount');
+            $table->date('statement_date');
             $table->foreignId('user_id')->constrained('users');
-            $table->double('remaining_balance');
             $table->morphs('statementable');
             $table->timestamps();
         });

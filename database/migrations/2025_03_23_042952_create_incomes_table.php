@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->double('amount');
             $table->foreignId('user_id')->constrained('users');
-            $table->string('month');
+            $table->date('income_date');
             $table->timestamps();
         });
     }

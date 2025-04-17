@@ -72,12 +72,6 @@
     <div class="main_div">
         <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <div class="header">FORECAST PREDICTION EXPENSES FOR [ {{strtoupper($currentMonth)}} ]</div>
-            <div class="months">
-                @foreach($months as $mon)
-{{--                    <a class="month-btn" href="{{route('forecast.show',$mon)}}">{{$mon}}</a>--}}
-{{--                    <button class="month-btn" onclick="route('forecast.show', '{{ $mon }}')">{{ $mon }}</button>--}}
-                @endforeach
-            </div>
             @if(session('error'))
                 <h1>{{ session('error') }}</h1>
             @else
@@ -91,16 +85,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach($category as $data)
+                        @foreach($categoryUser as $data)
                             <tr>
                                 <td>{{ $data->name }}</td>
-                                @if($user_income ==0)
-                                <td>0</td>
-                                @else
-                                <td>{{ number_format(((($actualExpenses[$data->id] ?? 0) + ($catPer[$data->id] ?? 0)) / 2 )/  $user_income  * 100, 2) }}%</td>
-                                @endif
-                                <td>{{ ($actualExpenses[$data->id]?? 0) + ( $catPer[$data->id]??0) /2 }}</td>
-
+                                <td><span style="font-weight: bold">NRP</span> {{$nextMonthEstimatedExpenses[$data->id]}}</td>
+                                <td>{{ $percentageConverted[$data->id]?? 0 }} %</td>
                             </tr>
                         @endforeach
 

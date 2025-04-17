@@ -48,16 +48,16 @@ class IncomeController extends Controller
         $month = Carbon::now()->month;
         $validated = $request->validated();
         $total_income = Income::where('user_id', Auth::id())->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('amount');
-        $remaining= $total_income + $validated['amount'];
-        DB::transaction(function () use ($request, $month, $validated, $remaining) {
+        DB::transaction(function () use ($request, $month, $validated) {
             $income = Income::create([
                 'amount' =>$validated['amount'],
                 'month' =>$month,
+                'income_date' => Carbon::now()->toDateString(),
                 'user_id' =>Auth::id()
             ]);
             $income->statement()->create([
-                'remaining_balance' => $remaining,
                 'user_id' => Auth::id(),
+                'statement_date' => Carbon::now()->toDateString(),
                 'amount' => $validated['amount']
             ]);
         });

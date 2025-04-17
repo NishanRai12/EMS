@@ -151,8 +151,9 @@
                                 <tr>
                                     <td>{{$data->name}}</td>
                                     <td>{{$data->category_percentage ?? 0}} %</td>
-                                    <td>{{$expensesExpectation[$data->id] }}</td>
-                                    <td>{{$data->expenses_sum ?? 0}}</td>
+                                    <td><span style="font-weight: bold">NRP</span> {{$expensesExpectation[$data->id] }}</td>
+                                    <td>
+                                        <span style="font-weight: bold">NRP</span> {{$data->expenses_sum ?? 0}}</td>
                                 </tr>
                             @endforeach
                         </tbody>

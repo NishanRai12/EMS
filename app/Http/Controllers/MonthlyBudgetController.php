@@ -23,30 +23,28 @@ class MonthlyBudgetController extends Controller
     public function index()
     {
         $user = Auth::user();
-//        $findStatements = Statement::with('income')->where('user_id',Auth::id())->orderBy('created_at','desc')->get();
         $findStatements = Statement::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
+            ->orderBy('statement_date', 'desc')
             ->limit(6)->get();
-
         $thisYear = Carbon::now()->format('Y');
         $totalExpenses = DB::table('expenses')
             ->select('expenses.user_id',
                 DB::raw("
-                    SUM(CASE WHEN DATE(created_at) = CURRENT_DATE()  AND YEAR(created_at) = YEAR(CURRENT_DATE())THEN amount ELSE NULL END) AS todayExpenses,
-                    SUM(CASE WHEN DATE(created_at) = CURRENT_DATE() - INTERVAL 1 DAY AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS yesterdayExpenses,
-                    SUM(CASE WHEN YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS thisYearExpenses,
-                    SUM(CASE WHEN MONTH(created_at)= MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS monthExpenses,
-                    COUNT(CASE WHEN DATE(created_at) = CURRENT_DATE() AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN id  END) AS todayExpensesCount,
-                    COUNT(CASE WHEN DATE(created_at) = CURRENT_DATE() - INTERVAL 1 DAY AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS yesterdayExpensesCount,
-                     COUNT(CASE WHEN YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS thisYearExpensesCount,
-                    COUNT(CASE WHEN MONTH(created_at)= MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS monthExpensesCount
+                    SUM(CASE WHEN DATE(expenses_date) = CURRENT_DATE()  AND YEAR(expenses_date) = YEAR(CURRENT_DATE())THEN amount ELSE NULL END) AS todayExpenses,
+                    SUM(CASE WHEN DATE(expenses_date) = CURRENT_DATE - INTERVAL 1 DAY THEN amount ELSE 0 END) AS yesterdayExpenses,
+                    SUM(CASE WHEN YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS thisYearExpenses,
+                    SUM(CASE WHEN MONTH(expenses_date)= MONTH(CURRENT_DATE()) AND YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN amount ELSE 0 END) AS monthExpenses,
+                    COUNT(CASE WHEN DATE(expenses_date) = CURRENT_DATE() AND YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN id  END) AS todayExpensesCount,
+                    COUNT(CASE WHEN DATE(expenses_date) = CURRENT_DATE() - INTERVAL 1 DAY AND YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS yesterdayExpensesCount,
+                     COUNT(CASE WHEN YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS thisYearExpensesCount,
+                    COUNT(CASE WHEN MONTH(expenses_date)= MONTH(CURRENT_DATE()) AND YEAR(expenses_date) = YEAR(CURRENT_DATE()) THEN amount ELSE NULL END) AS monthExpensesCount
                 "))
             ->where('user_id',Auth::id())
             ->groupBy('expenses.user_id')->first();
-        $getExpenses = Expenses::orderBy('created_at','DESC')->limit(9)->get();
+        $getExpenses = Expenses::orderBy('expenses_date','DESC')->limit(9)->get();
        //sum of percentage user forecasted to spend
         $sumOfPercentage = $user->percentages()->where('month',Carbon::now()->month)->sum('percentage');
-        $user_income = Income::where('user_id',Auth::user()->id)->where('month', Carbon::now()->format('n'))->sum('amount');
+        $user_income = Income::where('user_id',Auth::user()->id)->whereMonth('income_date', Carbon::now()->format('n'))->sum('amount');
         $forecast = (($sumOfPercentage*$user_income)/100);
 //        $remaining = $forecast-$totalExpenses->monthExpenses;
         return view('monthlyBudget.index',compact('totalExpenses','forecast','thisYear','getExpenses','findStatements'));
