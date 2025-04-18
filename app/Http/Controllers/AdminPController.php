@@ -106,10 +106,18 @@ class AdminPController extends Controller
     }
     public function createPermission(string $id)
     {
-
-//        $permissionID = $request->input('permission');
         $role = Role::where('role_name', 'user')->first();
         $role->permissions()->attach($id);
         return redirect()->back();
+    }
+    public function deleteCategory(string $id){
+        $fetch = Category::findOrFail($id);
+        $fetch->delete();
+        return back();
+    }
+    public function restoreCategory(string $id){
+        $fetch = Category::withTrashed()->findorfail($id);
+        $fetch->restore();
+        return back();
     }
 }

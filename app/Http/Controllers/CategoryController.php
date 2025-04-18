@@ -46,7 +46,11 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('category.create');
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
+        return view('category.create', compact('totalPercentageFormonth'));
     }
 
     public function createCategoryPercentage(Request $request){
@@ -208,50 +212,72 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
+        //total percentage of the user for this month
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
         $validatedData = $request->validated();
         $fetch_adminID = User::whereHas('roles', function ($query) {
             $query->where('role_name', 'admin');
         })->pluck('id')->toArray();
         $findCat = Category::where('name', $validatedData['cat_name'])->first();
-        if ($findCat) {
-            //ckeck if the category is deleted or not
-            if ($findCat->deleted_at == null) {
-                if (in_array($findCat->user_id, $fetch_adminID)) {
-                    //check if the admin already created the category or jnot
-                    return back()->withErrors(['cat_name' => 'Category already exists']);
-                } else {
-                    $user = Auth::user();
-                    //checking before entering in pivot table
-                    $existingCategory = $user->categories()->where('category_id', $findCat->id)->exists();
-                    //if the category is used for this month error is displayed
-                    if ($existingCategory) {
-                        return back()->withErrors(['cat_name' => 'Category already used']);
+        if( $totalPercentageFormonth + $validatedData['percentage'] > 100){
+            return redirect()->back()->withErrors(['percentage' => 'Total Percentage is more than 100 percentage.']);
+        }else {
+            if ($findCat) {
+                //check if the category is deleted or not
+                if ($findCat->deleted_at == null) {
+                    if (in_array($findCat->user_id, $fetch_adminID)) {
+                        //check if the admin already created the category or jnot
+                        return back()->withErrors(['cat_name' => 'Category already exists']);
                     } else {
-                        $user->categories()->attach($findCat->id, [
-                            'year' => Carbon::now()->year,
-                            'month' => Carbon::now()->month,
-                        ]);
-                        return back()->with('success', 'Category created successfully');
+                        $user = Auth::user();
+                        //checking before entering in pivot table
+                        $existingCategory = $user->categories()->where('category_id', $findCat->id)->exists();
+                        //if the category is used for this month error is displayed
+                        if ($existingCategory) {
+                            return back()->withErrors(['cat_name' => 'Category already used']);
+                        } else {
+                            $user->categories()->attach($findCat->id, [
+                                'year' => Carbon::now()->year,
+                                'month' => Carbon::now()->month,
+                            ]);
+                            Percentage::create([
+                                'user_id' => Auth::id(),
+                                'category_id' =>$findCat->id,
+                                'percentage' => $validatedData['percentage'],
+                                'month' => Carbon::now()->format('n'),
+                                'year' => Carbon::now()->year,
+                            ]);
+                            return back()->with('success', 'Category created successfully');
+                        }
                     }
+                } else {
+                    return back()->withErrors(['cat_name' => 'This name is not allowed.Please choose a different one.']);
                 }
             } else {
-                return back()->withErrors(['cat_name' => 'This name is not allowed.Please choose a different one.']);
+                DB::transaction(function () use ($request, $validatedData) {
+                    $category = Category::create([
+                        'name' => $validatedData['cat_name'],
+                        'user_id' => Auth::id()
+                    ]);
+                    $category->users()->attach(Auth::id(), [
+                        'category_id' => $category->id,
+                        'year' => Carbon::now()->year,
+                        'month' => Carbon::now()->month,
+                    ]);
+                    Percentage::create([
+                        'user_id' => Auth::id(),
+                        'category_id' =>$category->id,
+                        'percentage' => $validatedData['percentage'],
+                        'month' => Carbon::now()->format('n'),
+                        'year' => Carbon::now()->year,
+                    ]);
+                });
+                return back()->with('success', 'Category created successfully');
             }
-        } else {
-            DB::transaction(function () use ($request, $validatedData) {
-                $category = Category::create([
-                    'name' => $validatedData['cat_name'],
-                    'user_id' => Auth::id()
-                ]);
-                $category->users()->attach(Auth::id(), [
-                    'category_id' => $category->id,
-                    'year' => Carbon::now()->year,
-                    'month' => Carbon::now()->month,
-                ]);
-            });
-            return back()->with('success', 'Category created successfully');
         }
-
     }
 
     /**
@@ -296,89 +322,20 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      */
 
-//soft delete
-    public function destroy(string $id)
-    {
-//        dd($id);
-//        $fetch = Category::where('id', $id)->first();
-        $fetch = Category::findOrFail($id);
-        $fetch->delete();
-        return back();
-    }
 
     //restore soft delete
     public function restore(string $id)
     {
-        $fetch = Category::withTrashed()->findorfail($id);
-        $fetch->restore();
-        return back();
     }
-
-    //force delete
-//    public function removeUse(string $id)
-//    {
-//        $categoryFetch = Category::withTrashed()->findOrFail($id);
-//        $categoryFetch->users()->detach(Auth::id());
-//        return back();
-//    }
 
     public function validate(CategoryRequest $request)
     {
         // Validate the request
         $validatedData = $request->validated();
         $name = $validatedData['cat_name'];
-
         // Store selected categories in session
         session()->flash('selected_categories', request('categories', []));
         return back()->with('success', 'Category added successfully!')->with('name', $name);
-    }
-
-    //validate and store the category and percentage in a session used for store a new and also for when the category is empty
-    public function storeFormSession(EstimateRequest $request)
-    {
-        $categories = $request->input('categories', []);
-        $percentages = $request->input('percentages', []);
-        $percentage = array_sum($percentages);
-        if (empty($categories)) {
-            return back()->with('catNull', 'No category selected!');
-        } else if ($percentage == 0) {
-            return back()->with('null', 'Please enter percentage');
-        } else if ($percentage > 100) {
-            return back()->with('error', 'Percentage cannot be greater than 100%');
-        } else {
-            //at start of month
-            //if the authentication is done
-            if (Auth::user()) {
-                $user = Auth::user();
-                foreach ($percentages as $key => $value) {
-                    if ($value != null) {
-                        $check = $user->categories()
-                            ->where('category_id', $key)
-                            ->wherePivot('month', Carbon::now()->format('n'))
-                            ->wherePivot('year', Carbon::now()->year)
-                            ->exists();
-
-                        Percentage::create([
-                            'user_id' => Auth::id(),
-                            'category_id' => $key,
-                            'percentage' => $value,
-                            'month' => Carbon::now()->format('n'),
-                            'year' => Carbon::now()->year,
-                        ]);
-                        if (!$check) {
-                            $user->categories()->attach($key, ['year' => Carbon::now()->year, 'month' => Carbon::now()->format('n')]);
-                        }
-                    }
-                }
-                return redirect()->route('percentage.show', Auth::user()->id);
-            }
-        }
-    }
-
-    public function showFormCat()
-    {
-        $category = Category::simplePaginate(3);
-        return view('registration.categoryForm', compact('category'));
     }
 }
 

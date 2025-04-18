@@ -83,13 +83,13 @@
 
                                 <ul class="dropdown-menu">
                                     @if($displayData->deleted_at == "")
-                                        <form method= "POST" action="{{route('category.destroy',$displayData->id)}}">
+                                        <form method= "POST" action="{{route('admin.categoryDestroy',$displayData->id)}}">
                                             @csrf
                                             @method('DELETE')
                                             <button class="dropdown-item" type="Submit"> Delete</button>
                                         </form>
                                     @else
-                                        <form method= "POST" action="{{route('category.restore',$displayData->id)}}">
+                                        <form method= "POST" action="{{route('admin.categoryRestore',$displayData->id)}}">
                                             @csrf
                                             <button class="dropdown-item" type="Submit"> Restore</button>
                                         </form>

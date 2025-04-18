@@ -8,7 +8,6 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        {{--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>--}}
 
         <style>
             .main_div {
@@ -79,6 +78,7 @@
     <div class="main_div">
         <div class="child_div_1">
             <div class="header">Add New Categories</div>
+            <h1 style="font-weight:bold;font-size: 17px; color: #0056b3">Total percentage:-{{$totalPercentageFormonth}}%</h1>
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ session('success') }}
@@ -93,6 +93,13 @@
                     <input name="cat_name" placeholder="Name" value="{{old('cat_name', $cat_name ?? '') }}">
                 </div>
                 @error('cat_name')
+                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
+                @enderror
+                <div class="form-group">
+                    <label for="cat_name">Percentage</label>
+                    <input type ="number" name="percentage" placeholder="Percentage" value="{{old('percentage', $percenatge_name?? '') }}">
+                </div>
+                @error('percentage')
                 <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
                 @enderror
                 <div class="button-group">

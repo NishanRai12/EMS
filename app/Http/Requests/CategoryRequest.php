@@ -22,7 +22,14 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cat_name' => 'required|max:20|min:3|string',
+            'cat_name' => 'required|min:3',
+            'percentage' => 'required|max:100|min:0|numeric',
+        ];
+    }
+    public function messages(): array{
+        return [
+            'cat_name.required' => 'The Category name is required',
+            'cat_name.min' => 'The Category name must be at least 3 characters',
         ];
     }
 }

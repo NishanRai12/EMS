@@ -23,7 +23,6 @@ Route::middleware(['access','catRegCheck','auth'])->group(function () {
     Route::resource('expenses',ExpensesController::class);
     Route::resource('forecast',ForecastController::class);
     Route::resource('monthlyBudget',MonthlyBudgetController::class);
-    Route::post('/category/restore/{id}', [CategoryController::class, 'restore'])->name('category.restore');
     Route::resource('role',RoleController::class);
     Route::get('/expenses-show/{id}', [ForecastController::class, 'showExpenses'])->name('forecast.shoeExpenses');
     Route::get('/sort-expenses',[ExpensesController::class, 'sortExpenses'])->name('expenses.sortExpenses');
@@ -59,6 +58,9 @@ Route::get('/edit-category-percentage/{id}', [CategoryController::class, 'editCa
 Route::post('/store-category-percentage', [CategoryController::class, 'storeCategoryPercentage'])->name('category.storeCategoryPercentage');
 Route::put('/store-modified-percentage', [CategoryController::class, 'storeModifiedCategoryPercentage'])->name('category.storeModifiedCategoryPercentage');
 Route::get('/delete-percentage/{id}', [CategoryController::class, 'deleteCategoryPercentage'])->name('category.deleteCategoryPercentage');
+
+Route::post('/admin-category-restore/{id}', [AdminPController::class, 'restoreCategory'])->name('admin.categoryRestore');
+Route::delete('/admin-category-delete/{id}', [AdminPController::class, 'deleteCategory'])->name('admin.categoryDestroy');
 
 
 require __DIR__.'/auth.php';
