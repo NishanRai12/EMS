@@ -53,72 +53,42 @@
     <body>
     <div class="main_div">
         <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <a class="submit_category" href="{{route('category.create')}}">Add Categories</a>
             <div class="first_div">
                 <div class="header">
-                    CHOOSE CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
+                   ASSIGN PERCENTAGE FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
                 </div>
-                <form method="GET" action="{{ route('category.createCategoryPercentage')}}">
+                <h1 style="font-weight:bold;font-size: 17px; color: #0056b3">Total percentage:- {{$totalPercentageFormonth}} %</h1>
+                <form method="POST" action="{{ route('category.storeCategoryPercentage')}}">
+                    @csrf
                     <table class="table">
                         <thead>
                         <tr>
                             <th scope="col">Name</th>
-                            <th scope="col">Status</th>
-
+                            <th scope="col">Percentage</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($fetch_adminCat as $displayData)
+                        @foreach($category as $displayData)
                             <tr>
                                 <td>{{ $displayData->name }}</td>
-                                @if($displayData->deleted_at == "")
-                                    <td style=" color:green">Enabled</td>
-                                @else
-                                    <td style="color:red;">Disabled</td>
-                                @endif
-                                <td><input name ="selectData[]" value="{{$displayData->id}}" type="checkbox"></td>
+                                <td>
+                                    <input type="number" placeholder="%" name="categoryPercentage[{{ $displayData->id }}]">
+                                    <br>
+                                    @error('categoryPercentage.' . $displayData->id)
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+                    @error('cat_error')
+                       <div style="color: red">{{$message}}</div>
+                    @enderror
                     <button class="submit_category" type="submit">Submit</button>
                     <br>
-                    @error('selectData')
-                    <div style="color: red ">{{$message}}</div>
-                    @enderror
                 </form>
-                {{$fetch_adminCat->links()}}
-            </div>
-            <div class="second_div">
-                <div class="header">
-                    CHOOSED CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
-                </div>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Percentage</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($user_cat as $displayData)
-                        <tr>
-                            <td>{{ $displayData->name ??''}}</td>
-                            @if($displayData->deleted_at == "")
-                                <td style=" color:green">Enabled</td>
-                            @else
-                                <td style="color:red;">Disabled</td>
-                            @endif
-                            <td>{{$displayData->percentages->first()->percentage ?? 0}} %</td>
-                            <td><a href="{{ route('category.editCategoryPercentage', $displayData->id) }}"><i class="fa-solid fa-pen-to-square"></i></a></td>
-                            <td><a href="{{ route('category.deleteCategoryPercentage',$displayData->id) }}" >Remove</a> </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                {{$user_cat->links()}}
             </div>
         </div>
     </div>

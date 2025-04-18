@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryPercentageRequest;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\EstimateRequest;
 use App\Models\Category;
@@ -28,10 +29,15 @@ class CategoryController extends Controller
                 $query->where('user_id', Auth::id())->where('year', Carbon::now()->year)->where('month', Carbon::now()->month);
             })
             ->simplePaginate(3);
-        $user_cat = Category::whereHas('users', function ($query) {
-            $query->where('user_id', Auth::id())->where('year', Carbon::now()->year)->where('month', Carbon::now()->month);
+        $user_cat = Category::with(['percentages' => function ($query) {
+            $query->where('user_id', Auth::id())
+                ->where('year', Carbon::now()->year)
+                ->where('month', Carbon::now()->month);
+        }])->whereHas('users', function ($query) {
+            $query->where('user_id', Auth::id())
+                ->where('year', Carbon::now()->year)
+                ->where('month', Carbon::now()->month);
         })->simplePaginate(3);
-
         return view('category.index', compact('fetch_adminCat', 'user_cat'));
     }
 
@@ -43,14 +49,160 @@ class CategoryController extends Controller
         return view('category.create');
     }
 
+    public function createCategoryPercentage(Request $request){
+
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
+        $request->validate([
+            'selectData' => 'required'
+        ],[
+            'selectData.required' => 'Please select at least one category.',
+        ]);
+        $selectedCategories = $request->input('selectData');
+        $category = Category::whereIn('id', $selectedCategories)->get();
+        if ($category->isEmpty()) {
+            abort(404); // No categories found
+        }
+        return view('category.createCategoryPercentage',compact('category','totalPercentageFormonth'));
+    }
+    public function storeCategoryPercentage(CategoryPercentageRequest $request){
+
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
+        $validated = $request->validated();
+        $percentageCat = $validated['categoryPercentage'];
+        $inputPercentage = array_sum($percentageCat);
+        if($inputPercentage+$totalPercentageFormonth > 100){
+            return redirect()->back()->withErrors([
+                'cat_error' => 'Total Percentage is more than 100 percentage.',
+            ]);
+        }else {
+            $user = Auth::user();
+            foreach ($percentageCat as $key => $value) {
+                Percentage::create([
+                    'user_id' => $user->id,
+                    'category_id' => $key,
+                    'percentage' => $value,
+                    'month' => Carbon::now()->format('n'),
+                    'year' => Carbon::now()->year,
+                ]);
+                $user->categories()->attach($key, [
+                    'month' => Carbon::now()->month,
+                    'year' => Carbon::now()->year
+                ]);
+            }
+            return redirect()->route('category.index');
+        }
+    }
+    public function editCategoryPercentage(string $id){
+        $editCat = Category::with(['percentages' => function ($query) {
+            $query->where('user_id', Auth::id())
+                ->where('year', Carbon::now()->year)
+                ->where('month', Carbon::now()->month);
+        }])->where('id', $id)->first();
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
+        return view('category.editCategoryPercentage',compact('totalPercentageFormonth','editCat'));
+    }
+    public function storeModifiedCategoryPercentage(Request $request){
+        //get total percentage of the user for this month
+        $totalPercentageFormonth = Percentage::where('user_id',Auth::id())
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->sum('percentage');
+        $request->validate([
+            'category_name' => 'required','min:1',
+            'category_percentage' =>  'required|numeric|min:0|max:100',
+        ]);
+        $category_name = $request->input('category_name');
+        $category_percentage = $request->input('category_percentage');
+        //get old cat name
+        $old_category_name = Category::where('name', $request->input('old_cat'))->first();
+        //check if the category exist or not
+        $inputCategoryCheck = Category::where('name', $category_name)->first();
+        //check if the pwrecentage to input is greater than 100 or not
+        if($totalPercentageFormonth+ $category_percentage >100){
+            return redirect()->back()->withErrors([
+                'category_percentage' => 'Total Percentage is more than 100 percentage.',
+            ]);
+        }else {
+            if ($inputCategoryCheck) {
+                //get previous category percentage
+                $pervCatPercentage = Percentage::where('user_id', Auth::id())
+                    ->where('category_id', $old_category_name->id)
+                    ->where('year', Carbon::now()->year)
+                    ->where('month', Carbon::now()->month)
+                    ->first();
+                //detach previous
+                Auth::user()->categories()
+                    ->wherePivot('month', Carbon::now()->format('n'))
+                    ->wherePivot('year', Carbon::now()->year)
+                    ->detach($old_category_name->id);
+                //attach new user category
+                Auth::user()->categories()->attach($inputCategoryCheck->id, [
+                    'month' => Carbon::now()->format('n'),
+                    'year' => Carbon::now()->year
+                ]);
+                //create new percentage
+                Percentage::create([
+                    'user_id' => Auth::id(),
+                    'category_id' => $inputCategoryCheck->id,
+                    'percentage' => $category_percentage,
+                    'month' => Carbon::now()->format('n'),
+                    'year' => Carbon::now()->year,
+                ]);
+                //remove prev category perentage
+                $pervCatPercentage->delete();
+                return redirect()->route('category.index');
+            } else {
+               $newCategoryCreated = Category::create([
+                    'name' => $category_name,
+                    'user_id' => Auth::id()
+                ]);
+               //attach new categorty
+                Auth::user()->categories()->attach($newCategoryCreated->id, [
+                    'month' => Carbon::now()->format('n'),
+                    'year' => Carbon::now()->year
+                ]);
+                //create new percentage
+                Percentage::create([
+                    'user_id' => Auth::id(),
+                    'category_id' =>$newCategoryCreated->id,
+                    'percentage' => $category_percentage,
+                    'month' => Carbon::now()->format('n'),
+                    'year' => Carbon::now()->year,
+                ]);
+                return redirect()->route('category.index');
+            }
+        }
+    }
+    public function deleteCategoryPercentage(string $id){
+//        dd($id);
+        $getPercentage = Percentage::where('user_id', Auth::id())
+            ->where('category_id', $id)
+            ->where('year', Carbon::now()->year)
+            ->where('month', Carbon::now()->month)
+            ->first();
+        $getPercentage->delete();
+        Auth::user()->categories()
+            ->wherePivot('month', Carbon::now()->format('n'))
+            ->wherePivot('year', Carbon::now()->year)
+            ->detach( $id);
+
+        return back();
+    }
     public function category()
     {
         $category = Category::simplePaginate(3);
         return view('category.category', compact('category'));
     }
-//    public function saveCategeory (){}
-//
-//    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -163,12 +315,12 @@ class CategoryController extends Controller
     }
 
     //force delete
-    public function removeUse(string $id)
-    {
-        $categoryFetch = Category::withTrashed()->findOrFail($id);
-        $categoryFetch->users()->detach(Auth::id());
-        return back();
-    }
+//    public function removeUse(string $id)
+//    {
+//        $categoryFetch = Category::withTrashed()->findOrFail($id);
+//        $categoryFetch->users()->detach(Auth::id());
+//        return back();
+//    }
 
     public function validate(CategoryRequest $request)
     {
@@ -223,26 +375,10 @@ class CategoryController extends Controller
         }
     }
 
-    //display the new form to add categories
-    public function newForm()
-    {
-        $currentCategories = Category::all()->pluck('name')->toArray();
-        return view('registration.newCat', compact('currentCategories'));
-    }
-
-//    display the form to select the categories with percentage
     public function showFormCat()
     {
         $category = Category::simplePaginate(3);
         return view('registration.categoryForm', compact('category'));
-    }
-
-    //create a session for a new category
-    public function getDataCat(Request $request)
-    {
-        $newCategory = $request->input('newCategory');
-        session(['newCategory' => $newCategory]);
-        return redirect()->route('submit.finalSubmit');
     }
 }
 

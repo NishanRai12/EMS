@@ -1,15 +1,12 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminPController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryUserController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ForecastController;
-use App\Http\Controllers\FormController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\MonthlyBudgetController;
-use App\Http\Controllers\PercentageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +20,6 @@ Route::view('profile', 'profile')
     ->name('profile');
 Route::middleware(['access','catRegCheck','auth'])->group(function () {
     Route::resource('category',CategoryController::class);
-    Route::resource('percentage',PercentageController::class);
     Route::resource('expenses',ExpensesController::class);
     Route::resource('forecast',ForecastController::class);
     Route::resource('monthlyBudget',MonthlyBudgetController::class);
@@ -37,11 +33,6 @@ Route::middleware(['access','catRegCheck','auth'])->group(function () {
 });
 
 Route::resource('category_user',CategoryUserController::class);
-Route::get('/submit-form',[FormController::class, 'finalSubmit'])->name('submit.finalSubmit');
-Route::post('/validate-cat', [CategoryController::class, 'validate'])->name('validate.cat');
-Route::post('/store-cat', [CategoryController::class, 'storeFormSession'])->name('category.storeFormSession');
-Route::get('/display-formcat', [CategoryController::class, 'newForm'])->name('category.newFormCat');
-Route::post('/formcat', [CategoryController::class, 'getDataCat'])->name('category.getDataCat');
 Route::resource('income',IncomeController::class);
 
 Route::resource('registration',RegistrationController::class);
@@ -63,7 +54,11 @@ Route::get('/admin-display-categories', [AdminPController::class, 'displayALLCat
 Route::get('/admin-display-permission', [AdminPController::class, 'displaypermission'])->name('admin.displayaLLpermission');
 Route::post('/admin-create-permission/{id}', [AdminPController::class, 'createPermission'])->name('admin.createPermission');
 Route::delete('/admin-remove-permission/{id}', [AdminPController::class, 'destroyPermission'])->name('admin.destroyPermission');
-
+Route::get('/create-category-percentage', [CategoryController::class, 'createCategoryPercentage'])->name('category.createCategoryPercentage');
+Route::get('/edit-category-percentage/{id}', [CategoryController::class, 'editCategoryPercentage'])->name('category.editCategoryPercentage');
+Route::post('/store-category-percentage', [CategoryController::class, 'storeCategoryPercentage'])->name('category.storeCategoryPercentage');
+Route::put('/store-modified-percentage', [CategoryController::class, 'storeModifiedCategoryPercentage'])->name('category.storeModifiedCategoryPercentage');
+Route::get('/delete-percentage/{id}', [CategoryController::class, 'deleteCategoryPercentage'])->name('category.deleteCategoryPercentage');
 
 
 require __DIR__.'/auth.php';

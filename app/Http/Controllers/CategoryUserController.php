@@ -23,13 +23,9 @@ class CategoryUserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $category = Category::whereDoesntHave('users', function ($query)  {
-            $query->where('user_id', Auth::user()->id)->where('month', Carbon::now()->month);
-        })->get();
-        return view('category_user.create',compact('category'));
-    }
+//    public function create()
+//    {
+//    }
 
     /**
      * Store a newly created resource in storage.
