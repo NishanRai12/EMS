@@ -35,14 +35,17 @@ class ExpensesController extends Controller
             $query->where('user_id', Auth::id());
         })->orwhereHas('expenses',
             function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+                $subQuery->where('user_id', Auth::id())
+                    ->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
             })->withSum(['expenses as expenses_sum' =>
             function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+                $subQuery->where('user_id', Auth::id())
+                    ->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
             }], 'amount')
             ->withCount(['expenses as expense_count' =>
                 function ($subQuery) use ($parsed_start_date, $parsed_end_date) {
-                    $subQuery->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
+                    $subQuery->where('user_id', Auth::id())
+                        ->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date]);
                 }], 'amount')->simplePaginate(4);
 
         return view('expenses.index', compact('categories', 'start_date', 'end_date'));
@@ -55,10 +58,13 @@ class ExpensesController extends Controller
     {
         $store_date = $request->start_date;
         $categoryId = $request->category_id;
-        $categories = Category::findOrFail($categoryId);
-        $searchUserCategories = Auth::user()->categories()->where('category_id', $categoryId)
-            ->where('month',Carbon::now()->month)
-            ->where('year',Carbon::now()->year)->firstorFail();
+
+        if($categoryId){
+            $categories = Category::findOrFail($categoryId);
+            $searchUserCategories = Auth::user()->categories()->where('category_id', $categoryId)
+                ->where('month',Carbon::now()->month)
+                ->where('year',Carbon::now()->year)->firstorFail();
+        }
         $getUserChhosedCategory = Category::whereHas('users', function ($query) {
             $query->where('user_id', Auth::id())
                 ->where('month', Carbon::now()->month)
@@ -146,19 +152,24 @@ class ExpensesController extends Controller
     //display all expenses
     public function show(FilterDateRequest $request)
     {
+//        dd($request->all());
         $user = Auth::user();
-
         //check if the category can be accessed by the user or not
         $categoryId = Category::findOrFail($request->get('category_id'));
-        $cat_access = $user->categories()->where('category_id', $categoryId->id)->firstOrfail();
+//        $cat_access = $user->categories()->where('category_id', $categoryId->id)->firstOrfail();
+//        $cat_name = $cat_access->name;
+        $cat_name = "hello";
         $validated = $request->validated();
         $start_date = $validated['start_date'];
         $end_date = $validated['end_date'];
         //check if the category exists or not
         $parsed_start_date = Carbon::parse($start_date)->startOfDay();
         $parsed_end_date = Carbon::parse($end_date)->endOfDay();
-        $expensesCat = Expenses::where('category_id', $request->get('category_id'))->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date])->simplePaginate(10);
-        return view('expenses.show', compact('expensesCat'));
+        $expensesCat = Expenses::where('category_id', $request->get('category_id'))
+            ->where('user_id', Auth::id())
+            ->whereBetween('expenses_date', [$parsed_start_date, $parsed_end_date])
+            ->simplePaginate(10);
+        return view('expenses.show', compact('expensesCat','cat_name','categoryId'));
     }
 
     /**
@@ -180,16 +191,22 @@ class ExpensesController extends Controller
      */
     public function update(ExpensesRequest $request, string $id)
     {
+        $category_id = $request->get('category_id');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
+
         DB::transaction(function () use ($request, $id) {
             $validate = $request->validated();
             $expenses = Expenses::where('id', $id)->firstorFail();
             $expenses->update([
                 'title' => $validate['title'],
                 'description' => $validate['description'],
-                'amount' => $validate['amount']
+                'amount' => $validate['amount'],
+                'expenses_date' => $validate['date']
             ]);
         });
-        return redirect()->back()->with('success', 'Updated Successfully');
+        return redirect()->route('expenses.showCatExpenses',['category_id'=>$category_id,'start_date'=>$start_date,'end_date'=>$end_date]);
+
     }
 
     /**

@@ -77,6 +77,10 @@
                 background: #007bff;
                 color: #fff;
             }
+            .delete {
+                background: red;
+                color: #fff;
+            }
         </style>
     </head>
     <body>
@@ -90,6 +94,9 @@
             <form action="{{route('expenses.update',$expenses->id)}}" method="POST" onsubmit="return confirmSubmit()">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name ="start_date" value="{{request('start_date')}}">
+                <input type="hidden" name ="category_id" value="{{request('category_id')}}">
+                <input type="hidden" name="end_date" value="{{request('end_date')}}">
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input name="title" value="{{ old('title', $expenses->title) }}">
@@ -124,7 +131,7 @@
                 </div>
                 <div class="form-group">
                     <label for="spend">Date</label>
-                    <input id="date" type="date" value="{{ old('created_at', \Carbon\Carbon::parse($expenses->created_at)->toDateString()) }}" name="date">
+                    <input id="date" type="date" value="{{ old('created_at', \Carbon\Carbon::parse($expenses->expenses_date)->toDateString()) }}" name="date">
                 </div>
                 @error('date')
                 <div class="error-message">{{ $message }}</div>
@@ -142,12 +149,12 @@
     </div>
     <script>
         function confirmSubmit() {
-            var date = document.getElementById('date').value; // Get the value of the date input field
+            var date = document.getElementById('date').value;
             if (!date) {
                 alert("Please select a date.");
-                return false; // Prevent form submission if no date is selected
+                return false;
             }
-            return confirm("Are you sure the date is " + date + "?"); // Confirmation message with date
+            return confirm("Are you sure the date is " + date + "?");
         }
     </script>
     </body>

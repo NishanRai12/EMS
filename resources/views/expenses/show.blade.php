@@ -24,7 +24,7 @@
                 height: 90vh;
                 margin-top: 30px;
                 background-color: #ffffff;
-                padding: 100px;
+                padding: 40px 100px ;
                 border-radius: 8px;
                 width: 100%;
                 max-width: 90%;
@@ -62,7 +62,7 @@
                 justify-content: center;
 
             }
-            .btn {
+            .button {
                 background-color: #3260a8;
                 color: white;
                 border: none;
@@ -83,18 +83,43 @@
     <body>
     <div class="main_div">
         <div class="child_div_1">
-            @foreach($expensesCat as $expenses)
-                <div style="margin-left: 4rem;margin-right: 20rem; width: 65rem" class="card p-4 shadow-sm">
-                    <h6 class="fw-bold">
-                        {{ $expenses->title }} [<span style="color: #0056b3;">{{ $expenses->category->name }}</span>]
-                        <a href="{{ route('expenses.edit',$expenses->id)}}?start_date={{request('start_date')}}&end_date={{request('end_date')}}" title="Edit">
-                            <i class="fas fa-edit ms-2"></i>
-                        </a>
-                    </h6>
-                    <p class="text-muted">{{\Carbon\Carbon::parse($expenses->expenses_date)->format('D d M, Y')}}</p>
-                    <p>{{$expenses->description}}</p>
+            <h1 class="header">EXPENSES FOR {{strtoupper($cat_name)}}</h1>
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <div>
+                    <a class="button" href="{{ route('expenses.create', ['category_id' => request('category_id'), 'start_date' => request('start_date')]) }}">
+                        Add Expenses
+                    </a>
                 </div>
-            @endforeach
+                <div style="margin-left: auto;">
+                    <form action="{{ route('expenses.showCatExpenses') }}" method="GET">
+                        <div class="input-group">
+                            <input type="date" name="start_date" class="form-control me-2">
+                            <input type="date" name="end_date" class="form-control me-2">
+                            <input type="hidden" name = "category_id" value="{{request('category_id')}}">
+                            <button class="btn btn-primary" type="submit">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20rem">
+                @if(!$expensesCat->isEmpty())
+                    @foreach($expensesCat as $expenses)
+                        <div style="margin-left: 4rem;margin-top: 20px;margin-right: 20rem; width: 65rem" class="card p-4 shadow-sm">
+                            <h6 class="fw-bold" style="font-size: 17px">{{ $expenses->title }} [<span style="color: #0056b3;">{{ $expenses->category->name }}</span>]
+                                <a href="{{ route('expenses.edit',$expenses->id)}}?start_date={{request('start_date')}}&end_date={{request('end_date')}}" title="Edit">
+                                    <i class="fas fa-edit ms-2"></i>
+                                </a>
+                            </h6>
+                            <p class="text-muted">{{\Carbon\Carbon::parse($expenses->expenses_date)->format('D d M, Y')}}</p>
+                            <p><span style="font-weight: bold">Rs.</span>{{$expenses->amount}}</p>
+                            <p>{{$expenses->description}}</p>
+                        </div>
+                    @endforeach
+                @else
+                    <div style="display: flex;font-size: 22px;justify-self: center; margin-top: 14rem;color: #6b7280">Expenses Not Found</div>
+                @endif
+            </div>
             <div class="container mt-5 d-flex justify-content-center">
                 {{ $expensesCat->appends(['category_id' => request('category_id'), 'start_date' => request('start_date'), 'end_date' => request('end_date')])->links() }}
             </div>

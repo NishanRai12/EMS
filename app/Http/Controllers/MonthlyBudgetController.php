@@ -25,7 +25,7 @@ class MonthlyBudgetController extends Controller
         $user = Auth::user();
         $findStatements = Statement::where('user_id', Auth::id())
             ->orderBy('statement_date', 'desc')
-            ->limit(6)->get();
+            ->limit(5)->get();
         $thisYear = Carbon::now()->format('Y');
         $totalExpenses = DB::table('expenses')
             ->select('expenses.user_id',
@@ -41,7 +41,8 @@ class MonthlyBudgetController extends Controller
                 "))
             ->where('user_id',Auth::id())
             ->groupBy('expenses.user_id')->first();
-        $getExpenses = Expenses::orderBy('expenses_date','DESC')->limit(9)->get();
+        $getExpenses = Expenses::orderBy('expenses_date','DESC')->where('user_id',Auth::id())
+            ->limit(9)->get();
        //sum of percentage user forecasted to spend
         $sumOfPercentage = $user->percentages()->where('month',Carbon::now()->month)->sum('percentage');
         $user_income = Income::where('user_id',Auth::user()->id)->whereMonth('income_date', Carbon::now()->format('n'))->sum('amount');

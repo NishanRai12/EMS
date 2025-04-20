@@ -66,14 +66,14 @@
                                 <span>{{$message}}</span>
                             </div>
                             @enderror
-                        <form action="{{route('expenses.index')}}" method="GET">
-                            @csrf
-                            <div class="input-group">
-                                <input type="date" name="start_date" class="form-control">
-                                <input type="date" name="end_date" class="form-control">
-                                <button class="btn btn-primary" type="submit">Filter</button>
-                            </div>
-                        </form>
+                                <form action="{{route('expenses.index')}}" method="GET">
+                                    @csrf
+                                    <div class="input-group">
+                                        <input type="date" name="start_date" class="form-control">
+                                        <input type="date" name="end_date" class="form-control">
+                                        <button class="btn btn-primary" type="submit">Filter</button>
+                                    </div>
+                                </form>
                         @php
                             $colors = ['bg-secondary','bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-light', 'bg-dark'];
                         @endphp

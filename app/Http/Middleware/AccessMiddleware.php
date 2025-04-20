@@ -17,7 +17,7 @@ class AccessMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        $role = $user->getRole();
+        $role = $user->getRole();;
         if (Auth::user()->isAdmin()) {
             return $next($request);
         }else{

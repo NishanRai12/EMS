@@ -70,13 +70,17 @@ class User extends Authenticatable
     public function fullname(){
         return $this->first_name . ' ' . $this->last_name;
     }
+//    public function roles(){
+//        return $this->belongsToMany(Role::class);
+//    }
     public function roles(){
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class, 'role_user');
     }
     public function getRole(): ?Role
     {
-        return $this->roles()->first(); // Get the first associated role
+        return $this->roles()->first();
     }
+
     public function isAdmin(): bool
     {
         return $this->roles()->where('role_name', 'admin')->exists();

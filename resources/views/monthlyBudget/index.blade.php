@@ -188,7 +188,7 @@
             <div>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
                     <h1 style="font-size: 15px; font-weight: bold; margin-left: 15px"><i class="fa-solid fa-wallet" style="margin-right: 13px"></i>Missing Expenses?</h1>
-                    <a href="{{ route('expenses.create', ['category_id' => 0, 'start_date' => now()->toDateString()]) }}" class="button">Add Expenses</a>
+                    <a href="{{ route('expenses.create', ['start_date' => now()->toDateString()]) }}" class="button">Add Expenses</a>
                 </div>
             </div>
         </div>
