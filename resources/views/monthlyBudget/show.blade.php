@@ -114,7 +114,7 @@
                 @endphp
 
                 @foreach($months as $monthNumber => $monthName)
-{{--                    @php--}}
+{{--                    @createCategory.blade.php--}}
 {{--                        $budgetEntry = $budget->where('month', $monthNumber)->first();--}}
 {{--                    @endphp--}}
                     <tr>

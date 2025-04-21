@@ -16,7 +16,7 @@
                 background-color: #f2f2f2;
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                /*align-items: center;*/
                 margin: 0;
                 height: 100vh;
             }
@@ -26,16 +26,52 @@
                 padding: 25px;
                 border-radius: 8px;
                 width: 100%;
-                max-width: 800px;
+                max-width: 85rem;
+            }
+            .header {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                margin-top: 10px;
+                background: #e8eaf6;
+                padding: 10px;
+                border-radius: 4px;
+                text-align: center;
+            }
+            .button{
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+                color:white;
+                background-color: #0056b3 ;
             }
         </style>
     </head>
     <body>
     <div class="main_div">
         <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
-                Add Categories
-            </button>
+            <div class="header">
+                CHOOSE CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center;">
+                <div>
+                    <a class="button" href="{{ route('admin.createCategory') }}">
+                        Add Category
+                    </a>
+                </div>
+                <div style="margin-left: auto;">
+                    <form action="{{route('admin.displayALLCategories') }}" method="GET">
+                        <div class="input-group">
+                            <input type="date" name="start_date" class="form-control me-2">
+                            <input type="date" name="end_date" class="form-control me-2">
+                            <button class="btn btn-primary" type="submit">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
 
             <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height:50%; width: 100%;">
                 <div class="offcanvas-header">
@@ -70,7 +106,7 @@
                 <tbody>
                 @foreach($categories as $displayData)
                     <tr>
-                        <td>{{ $displayData->name }}</td>
+                        <td>{{ $displayData ->name }}</td>
                         <td>{{ $displayData->created_at }}</td>
                         <td>{{ $displayData->user->fullname() }}</td>
                         <td>{{ $displayData->users_count??0}}</td>

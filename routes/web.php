@@ -57,7 +57,8 @@ Route::post('/new-category-registration-store', [RegistrationController::class, 
 Route::get('/percentage-registration', [RegistrationController::class, 'showPercentageRegistration'])->name('registration.percentageRegistration');
 
 //Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
-
+Route::get('/admin-create-category', [AdminPController::class, 'createCategory'])->name('admin.createCategory');
+Route::post('/admin-store-category', [AdminPController::class, 'storeCategory'])->name('admin.storeCategory');
 
 
 require __DIR__.'/auth.php';

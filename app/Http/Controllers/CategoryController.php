@@ -180,7 +180,7 @@ class CategoryController extends Controller
                     $pervCatPercentage->delete();
                     return redirect()->route('category.index');
                 } else {
-                    $newCategoryCreated = Category::create([
+                    $newCategoryCreated = Category::createF([
                         'name' => $category_name,
                         'user_id' => Auth::id()
                     ]);

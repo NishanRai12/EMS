@@ -9,6 +9,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,22 +36,42 @@ class AdminPController extends Controller
         return view('admin.users', compact('users'));
     }
 
-    public function displayALLCategories()
+    public function displayALLCategories(Request $request)
     {
-        $categories = Category::withCount([
-            'users' => function ($query) {
-                $query->distinct();
-            }
-        ])->withTrashed()->get();
+        if($request->input('start_date') && $request->input('end_date')){
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+            $categories = Category::withCount([
+                'users' => function ($query) {
+                    $query->distinct();
+                }
+            ])->whereDate('created_at', '>=', $start_date)->whereDate('created_at', '<=', $end_date)->withTrashed()->get();
+        }else{
+            $categories = Category::withCount([
+                'users' => function ($query) {
+                    $query->distinct();
+                }
+            ])->withTrashed()->get();
+        }
         return view('admin.category', compact('categories'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function createCategory()
     {
-        //
+        return view('admin.createCategory');
+    }
+    public function storeCategory(Request $request){
+        $request->validate([
+            'cat_name' => 'required|min:3|unique:categories,name',
+        ]);
+        Category::create([
+            'name' => $request->input('cat_name'),
+            'user_id' => Auth::id(),
+        ]);
+        return redirect()->route('admin.displayALLCategories');
     }
 
     public function displaypermission(Request $request)
