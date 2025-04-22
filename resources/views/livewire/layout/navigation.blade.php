@@ -29,6 +29,11 @@ new class extends Component
                         </x-nav-link>
                     </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('admin.displayALLusers')" :active="request()->routeIs('admin.displayALLusers')" wire:navigate>
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    </div>
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link :href="route('admin.displayALLCategories')" :active="request()->routeIs('admin.displayALLCategories')" wire:navigate>
                             {{ __('Categories') }}
                         </x-nav-link>

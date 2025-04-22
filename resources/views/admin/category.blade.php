@@ -17,8 +17,8 @@
                 display: flex;
                 justify-content: center;
                 /*align-items: center;*/
-                margin: 0;
-                height: 100vh;
+              margin-top: 30px;
+
             }
 
             .child_div_1 {
@@ -27,6 +27,7 @@
                 border-radius: 8px;
                 width: 100%;
                 max-width: 85rem;
+                height: 80vh;
             }
             .header {
                 font-size: 18px;
@@ -47,13 +48,39 @@
                 color:white;
                 background-color: #0056b3 ;
             }
+
+            .form-inline {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                column-gap: 9px;
+            }
+            .input_search{
+                width: 20rem;
+            }
+
+            .search_button {
+                border: white 2px solid;
+                color: white;
+                background-color: #0056b3;
+                padding: 10px 20px;
+                font-size: 16px;
+                border-radius: 5px;
+            }
         </style>
     </head>
     <body>
+
     <div class="main_div">
-        <div  style="height: fit-content" class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+        <div class="child_div_1" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
             <div class="header">
                 CHOOSE CATEGORY FOR {{ strtoupper(\Carbon\Carbon::now()->format('F'))}}
+            </div>
+            <div style="display: flex; justify-self: center; margin-bottom: 34px">
+                <form class="form-inline" action="{{route('admin.displayALLCategories')}}" method="GET">
+                    <input  name= "search_data" class="input_search" type="search" placeholder="Search Categories" aria-label="Search">
+                    <button class="search_button" type="submit">Search</button>
+                </form>
             </div>
             <div style="display: flex; flex-direction: row; align-items: center;">
                 <div>
@@ -71,28 +98,9 @@
                     </form>
                 </div>
             </div>
-
-
-            <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height:50%; width: 100%;">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasTopLabel">Add Category</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <form action="{{ route('category.store') }}" method="POST" id="tagForm">
-                        @csrf
-                        <input type="hidden" name="user_logged" value="{{ Auth::id() }}">
-                        <div class="mb-3">
-                            <label for="cat_name" class="form-label">Category</label>
-                            <input type="text" class="form-control" name="cat_name" value="{{ old('cat_name') }}">
-                        </div>
-                        @error('cat_name')
-                        <div style="color: red;">{{ $message }}</div>
-                        @enderror
-                        <button type="submit" class="btn btn-success">Save</button>
-                    </form>
-                </div>
-            </div>
+            @if($categories->isEmpty())
+                <div style="display: flex;font-size: 22px;justify-self: center; margin-top: 10rem;color: #6b7280">Category Not Found</div>
+            @else
             <table class="table">
                 <thead>
                 <tr>
@@ -118,6 +126,9 @@
                                 </button>
 
                                 <ul class="dropdown-menu">
+                                    <button class="dropdown-item" >
+                                        <a  style="text-decoration: none " href="{{route('admin.editAdminCategory',$displayData->id)}}">Edit</a>
+                                    </button>
                                     @if($displayData->deleted_at == "")
                                         <form method= "POST" action="{{route('admin.categoryDestroy',$displayData->id)}}">
                                             @csrf
@@ -130,6 +141,7 @@
                                             <button class="dropdown-item" type="Submit"> Restore</button>
                                         </form>
                                     @endif
+
                                 </ul>
                             </div>
                         </td>
@@ -139,6 +151,7 @@
                 </tbody>
             </table>
             {{--            {{$categories->links()}}--}}
+            @endif
 
         </div>
     </div>

@@ -45,6 +45,15 @@ Route::middleware(['access','auth'])->group(function () {
     Route::delete('/admin-remove-permission/{id}', [AdminPController::class, 'destroyPermission'])->name('admin.destroyPermission');
     Route::post('/admin-category-restore/{id}', [AdminPController::class, 'restoreCategory'])->name('admin.categoryRestore');
     Route::delete('/admin-category-delete/{id}', [AdminPController::class, 'deleteCategory'])->name('admin.categoryDestroy');
+    Route::get('/admin-edit-category/{id}', [AdminPController::class, 'editAdminCategory'])->name('admin.editAdminCategory');
+    Route::put('/admin-update-category/{id}', [AdminPController::class, 'updateAdminCategory'])->name('admin.updateAdminCategory');
+
+    Route::get('/admin-delete-role/{id}', [RoleController::class, 'delete'])->name('admin.deleteRole');
+    Route::get('/admin-remove-role/{id}', [RoleController::class, 'removeRole'])->name('admin.removeUserRole');
+
+
+    Route::get('/admin-create-category', [AdminPController::class, 'createCategory'])->name('admin.createCategory');
+    Route::post('/admin-store-category', [AdminPController::class, 'storeCategory'])->name('admin.storeCategory');
 
 });
 Route::resource('registration',RegistrationController::class);
@@ -56,9 +65,6 @@ Route::post('/percentage-registration-store', [RegistrationController::class, 's
 Route::post('/new-category-registration-store', [RegistrationController::class, 'storeNewCatRegistration'])->name('register.storeNewCategory');
 Route::get('/percentage-registration', [RegistrationController::class, 'showPercentageRegistration'])->name('registration.percentageRegistration');
 
-//Route::get('/form-cat', [CategoryController::class, 'showFormCat'])->name('category.showFormCat');
-Route::get('/admin-create-category', [AdminPController::class, 'createCategory'])->name('admin.createCategory');
-Route::post('/admin-store-category', [AdminPController::class, 'storeCategory'])->name('admin.storeCategory');
 
 
 require __DIR__.'/auth.php';

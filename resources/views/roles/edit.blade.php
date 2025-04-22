@@ -68,7 +68,12 @@
                 background: #007bff;
                 color: #fff;
             }
-            .reset {
+            .delete {
+                text-decoration: none;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
                 background: #dc3545;
                 color: #fff;
             }
@@ -84,21 +89,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <form action="{{route('role.store')}}" method="POST">
+            <form action="{{ route('role.update',$categoryData->id) }}" method="POST">
                 @csrf
-                <input type="hidden" name="user_logged" value="{{Auth::user()->id}}">
+                @method('PUT')
+                <input type="hidden" name="old_name" value="{{ $categoryData->role_name }}">
                 <div class="form-group">
-                    <label for="role_name">Name</label> <br>
-                    <input name="role_name" placeholder="Name" value="{{old('role_name', $role_name ?? '') }}">
+                    <label for="role_name">Name</label><br>
+                    <input id="role_name" name="role_name" placeholder="Name" value="{{ old('role_name', $categoryData->role_name ?? '') }}">
                 </div>
                 @error('role_name')
-                <div style="color: red ; margin-left: 32.6%">{{$message}}</div>
+                <div style="color: red; margin-left: 32.6%;">{{ $message }}</div>
                 @enderror
+
                 <div class="button-group">
                     <button type="submit" class="add">Add</button>
-                    <button type="reset" class="reset">Reset</button>
+                    <a href="{{route('admin.deleteRole',$categoryData->id)}}" class="delete" >Delete</a>
                 </div>
             </form>
+
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
